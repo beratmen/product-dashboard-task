@@ -2,10 +2,6 @@
 
 A modern, full-featured e-commerce product dashboard built with **Next.js 16**, **React 19**, **Material UI v7**, **Redux Toolkit**, and **TypeScript**. This application showcases advanced frontend development practices including SSR/CSR rendering strategies, feature-based architecture, state management, shopping cart functionality, and a premium glassmorphism UI design.
 
-## 🌟 Live Demo
-
-[View Live Demo](#) <!-- Add your deployment URL here -->
-
 ## 🎥 Quick Look
 
 ![Application Demo](./screenshots/demo.gif)
