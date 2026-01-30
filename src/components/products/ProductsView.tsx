@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchProductsAsync, setProducts } from '@/store/slices/productSlice';
 import { setSearchQuery, setPage, setSortBy, setCategory } from '@/store/slices/uiSlice';
 import { toggleFavorite, loadFavorites } from '@/store/slices/favoritesSlice';
+import { addToCart, loadCart } from '@/store/slices/cartSlice';
 import { ProductResponse } from '@/types';
 import { debounce } from '@/utils/debounce';
 import Link from 'next/link';
@@ -27,6 +28,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
   const { items, total, loading, error } = useAppSelector((state) => state.products);
   const { searchQuery, currentPage, itemsPerPage, sortBy, selectedCategory } = useAppSelector((state) => state.ui);
   const { favoriteIds, isHydrated } = useAppSelector((state) => state.favorites);
+  const { isHydrated: isCartHydrated } = useAppSelector((state) => state.cart);
   const [categories, setCategories] = React.useState<string[]>([]);
 
   useEffect(() => {
@@ -45,6 +47,12 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
       dispatch(loadFavorites());
     }
   }, [dispatch, isHydrated]);
+
+  useEffect(() => {
+    if (!isCartHydrated) {
+      dispatch(loadCart());
+    }
+  }, [dispatch, isCartHydrated]);
 
   useEffect(() => {
     if (initialData && items.length === 0) {
@@ -99,6 +107,12 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
       params.delete('category');
     }
     router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const handleAddToCart = (e: React.MouseEvent, product: typeof items[0]) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(addToCart(product));
   };
 
   return (
@@ -495,10 +509,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                         </Box>
                         <IconButton
                           className="add-to-cart-btn"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                          }}
+                          onClick={(e) => handleAddToCart(e, product)}
                           sx={{
                             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                             color: 'white',
