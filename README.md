@@ -4,9 +4,9 @@ A modern, full-featured e-commerce product dashboard built with **Next.js 16**, 
 
 ## 🎥 Quick Look
 
-<video src="./screenshots/demo.mp4" controls width="100%"></video>
+<video src="https://github.com/user-attachments/assets/63f34d0c-8e3f-42bb-b6fd-9b8c8bc8a6e6" controls width="100%"></video>
 
-_(If the video doesn't play, you can [download it here](./screenshots/demo.mp4))_
+_(If the video doesn't play, you can [view it here](https://github.com/user-attachments/assets/63f34d0c-8e3f-42bb-b6fd-9b8c8bc8a6e6))_
 
 ## 📸 Screenshots
 
