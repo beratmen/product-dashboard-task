@@ -38,6 +38,12 @@ _Smooth skeleton loading animations for better user experience_
 
 _User-friendly error messages with retry functionality_
 
+### Not Found State
+
+![Not Found State](./screenshots/not-found.png)
+
+_Custom 404 page for better navigation when content is missing_
+
 ## 🚀 Features
 
 ### 🛍️ Core E-Commerce
