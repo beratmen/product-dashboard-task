@@ -3,7 +3,7 @@
 import React, { useEffect, useCallback } from 'react';
 import {
   Container, TextField, MenuItem, Box, CircularProgress, Stack,
-  InputAdornment, Typography, Button, Chip, Rating, IconButton, Pagination
+  InputAdornment, Typography, Button, Chip, Rating, IconButton, Pagination, Paper
 } from '@mui/material';
 import { Search as SearchIcon, ShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -102,298 +102,470 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
-      {/* Header */}
-      <Box sx={{ mb: { xs: 4, md: 8 } }}>
-        <Typography
-          variant="h2"
-          sx={{
-            fontWeight: 900,
-            mb: 2,
-            background: 'linear-gradient(135deg, #4338ca 0%, #7c3aed 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
+    <Box sx={{ 
+      minHeight: '100vh',
+      background: 'linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%)',
+      pb: 8
+    }}>
+      <Container maxWidth="lg" sx={{ pt: 6 }}>
+        {/* Header with Glassmorphism */}
+        <Paper 
+          elevation={0}
+          sx={{ 
+            mb: 6,
+            p: 4,
+            background: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 4,
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.07)'
           }}
         >
-          Shop Products
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 4, fontSize: { xs: '0.95rem', sm: '1.05rem' } }}>
-          {total} products available
-        </Typography>
-
-        {/* Filters */}
-        <Stack 
-          direction={{ xs: 'column', md: 'row' }} 
-          spacing={{ xs: 1.5, sm: 2 }}
-          sx={{ flexWrap: 'wrap' }}
-        >
-          <TextField
-            placeholder="Search products..."
-            variant="outlined"
-            onChange={handleSearch}
-            size="small"
-            InputProps={{
-              startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment>,
-            }}
-            sx={{ flex: { xs: '0 0 100%', md: 1 } }}
-          />
-          <TextField
-            select
-            label="Category"
-            value={selectedCategory || ''}
-            onChange={handleCategoryChange}
-            size="small"
-            sx={{ minWidth: { xs: '100%', sm: 150 } }}
-          >
-            <MenuItem value="">All Categories</MenuItem>
-            {categories.map((cat) => {
-              const categoryStr = typeof cat === 'string' ? cat : String(cat);
-              return (
-                <MenuItem key={categoryStr} value={categoryStr}>
-                  {categoryStr.charAt(0).toUpperCase() + categoryStr.slice(1).replace(/-/g, ' ')}
-                </MenuItem>
-              );
-            })}
-          </TextField>
-          <TextField
-            select
-            label="Sort"
-            value={sortBy}
-            onChange={handleSortChange}
-            size="small"
-            sx={{ minWidth: { xs: '100%', sm: 150 } }}
-          >
-            <MenuItem value="none">Default</MenuItem>
-            <MenuItem value="price">Price: Low to High</MenuItem>
-            <MenuItem value="rating">Rating: High to Low</MenuItem>
-          </TextField>
-        </Stack>
-      </Box>
-
-      {/* Error */}
-      {error && (
-        <Box sx={{ bgcolor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', borderRadius: 2, p: 2, mb: 4 }}>
-          <Typography color="error" sx={{ fontWeight: 600 }}>⚠️ {error}</Typography>
-        </Box>
-      )}
-
-      {/* Loading */}
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 12 }}>
-          <CircularProgress />
-        </Box>
-      ) : sortedItems.length === 0 ? (
-        <Box sx={{ textAlign: 'center', py: 12 }}>
-          <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
-            No products found
-          </Typography>
-          <Typography color="text.secondary">Try adjusting your search or filters</Typography>
-        </Box>
-      ) : (
-        <>
-          {/* Products Grid */}
-          <Box
+          <Typography
+            variant="h2"
             sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(3, 1fr)',
-                lg: 'repeat(4, 1fr)',
-              },
-              gap: { xs: 2, sm: 2.5, md: 3 },
-              mb: 6,
+              fontWeight: 900,
+              mb: 1.5,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+              letterSpacing: '-0.02em'
             }}
           >
-            {sortedItems.map((product) => (
-              <Link key={product.id} href={`/products/${product.id}`} style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
-                <Box
-                  sx={{
-                    backgroundColor: '#fff',
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    transition: 'all 0.3s ease',
-                    border: '1px solid #e5e7eb',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
-                    width: '100%',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-                      borderColor: '#4338ca',
-                    },
-                  }}
-                >
-                  {/* Image */}
-                  <Box
+            Discover Products
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem', fontWeight: 500 }}>
+            {total} premium products available
+          </Typography>
+        </Paper>
+
+        {/* Filters - Floating Panel */}
+        <Paper
+          elevation={0}
+          sx={{
+            mb: 5,
+            p: 3,
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 3,
+            border: '1px solid',
+            borderColor: 'divider',
+            boxShadow: '0 4px 20px 0 rgba(0, 0, 0, 0.05)'
+          }}
+        >
+          <Stack 
+            direction={{ xs: 'column', md: 'row' }} 
+            spacing={2}
+          >
+            <TextField
+              placeholder="Search products..."
+              variant="outlined"
+              onChange={handleSearch}
+              size="medium"
+              InputProps={{
+                startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment>,
+              }}
+              sx={{ 
+                flex: { xs: '0 0 100%', md: 1 },
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                  },
+                  '&.Mui-focused': {
+                    boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                  }
+                }
+              }}
+            />
+            <TextField
+              select
+              label="Category"
+              value={selectedCategory || ''}
+              onChange={handleCategoryChange}
+              size="medium"
+              sx={{ 
+                minWidth: { xs: '100%', sm: 180 },
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2
+                }
+              }}
+            >
+              <MenuItem value="">All Categories</MenuItem>
+              {categories.map((cat) => {
+                const categoryStr = typeof cat === 'string' ? cat : String(cat);
+                return (
+                  <MenuItem key={categoryStr} value={categoryStr}>
+                    {categoryStr.charAt(0).toUpperCase() + categoryStr.slice(1).replace(/-/g, ' ')}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+            <TextField
+              select
+              label="Sort"
+              value={sortBy}
+              onChange={handleSortChange}
+              size="medium"
+              sx={{ 
+                minWidth: { xs: '100%', sm: 180 },
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2
+                }
+              }}
+            >
+              <MenuItem value="none">Default</MenuItem>
+              <MenuItem value="price">Price: Low to High</MenuItem>
+              <MenuItem value="rating">Rating: High to Low</MenuItem>
+            </TextField>
+          </Stack>
+        </Paper>
+
+        {/* Error */}
+        {error && (
+          <Paper 
+            elevation={0}
+            sx={{ 
+              bgcolor: 'rgba(239, 68, 68, 0.05)', 
+              border: '1px solid rgba(239, 68, 68, 0.2)', 
+              borderRadius: 3, 
+              p: 3, 
+              mb: 4 
+            }}
+          >
+            <Typography color="error" sx={{ fontWeight: 600 }}>⚠️ {error}</Typography>
+          </Paper>
+        )}
+
+        {/* Loading */}
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 12 }}>
+            <CircularProgress size={48} thickness={4} />
+          </Box>
+        ) : sortedItems.length === 0 ? (
+          <Paper
+            elevation={0}
+            sx={{
+              textAlign: 'center',
+              py: 12,
+              borderRadius: 4,
+              background: 'rgba(255, 255, 255, 0.6)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
+            <Typography variant="h5" color="text.secondary" sx={{ mb: 2, fontWeight: 700 }}>
+              No products found
+            </Typography>
+            <Typography color="text.secondary">Try adjusting your search or filters</Typography>
+          </Paper>
+        ) : (
+          <>
+            {/* Products Grid */}
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                  lg: 'repeat(4, 1fr)',
+                },
+                gap: { xs: 2.5, sm: 3, md: 3.5 },
+                mb: 6,
+              }}
+            >
+              {sortedItems.map((product) => (
+                <Link key={product.id} href={`/products/${product.id}`} style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
+                  <Paper
+                    elevation={0}
                     sx={{
-                      position: 'relative',
-                      width: '100%',
-                      height: 200,
-                      backgroundColor: '#f3f4f6',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      backgroundColor: '#fff',
+                      borderRadius: 3,
                       overflow: 'hidden',
-                      flexShrink: 0,
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      border: '1px solid',
+                      borderColor: 'rgba(0, 0, 0, 0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: '100%',
+                      width: '100%',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      '&:hover': {
+                        transform: 'translateY(-12px) scale(1.02)',
+                        boxShadow: '0 20px 40px -12px rgba(102, 126, 234, 0.25), 0 0 0 1px rgba(102, 126, 234, 0.1)',
+                        borderColor: 'rgba(102, 126, 234, 0.3)',
+                        '& .product-image': {
+                          transform: 'scale(1.08)',
+                        },
+                        '& .add-to-cart-btn': {
+                          opacity: 1,
+                          transform: 'translateY(0)',
+                        }
+                      },
                     }}
                   >
-                    <img
-                      src={product.thumbnail}
-                      alt={product.title}
-                      style={{
-                        maxWidth: '85%',
-                        maxHeight: '85%',
-                        objectFit: 'contain',
+                    {/* Image */}
+                    <Box
+                      sx={{
+                        position: 'relative',
+                        width: '100%',
+                        height: 220,
+                        background: 'linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                        flexShrink: 0,
                       }}
-                    />
-
-                    {/* Discount Badge */}
-                    {product.discountPercentage > 0 && (
-                      <Chip
-                        label={`-${Math.round(product.discountPercentage)}%`}
-                        size="small"
+                    >
+                      <Box
+                        className="product-image"
+                        component="img"
+                        src={product.thumbnail}
+                        alt={product.title}
                         sx={{
-                          position: 'absolute',
-                          top: 10,
-                          right: 10,
-                          background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                          color: 'white',
-                          fontWeight: 700,
+                          maxWidth: '80%',
+                          maxHeight: '80%',
+                          objectFit: 'contain',
+                          transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                          mixBlendMode: 'multiply',
                         }}
                       />
-                    )}
 
-                    {/* Favorite Button */}
-                    <IconButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleFavoriteClick(e, product.id);
-                      }}
-                      sx={{
-                        position: 'absolute',
-                        top: 10,
-                        left: 10,
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        '&:hover': {
-                          backgroundColor: '#fff',
-                        },
-                      }}
-                      size="small"
-                    >
-                      {favoriteIds.includes(product.id) ? (
-                        <Favorite sx={{ color: '#ef4444' }} fontSize="small" />
-                      ) : (
-                        <FavoriteBorder fontSize="small" />
-                      )}
-                    </IconButton>
-                  </Box>
-
-                  {/* Content */}
-                  <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    {/* Category */}
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: '#4338ca',
-                        fontWeight: 700,
-                        mb: 1,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        fontSize: { xs: '0.65rem', sm: '0.7rem' },
-                      }}
-                    >
-                      {product.category.replace(/-/g, ' ')}
-                    </Typography>
-
-                    {/* Title */}
-                    <Typography
-                      sx={{
-                        fontSize: { xs: '0.9rem', sm: '0.95rem' },
-                        fontWeight: 700,
-                        mb: 2,
-                        height: '1.4em',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {product.title}
-                    </Typography>
-
-                    {/* Rating */}
-                    <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 'auto' }}>
-                      <Rating value={product.rating} readOnly size="small" sx={{ color: '#fbbf24' }} />
-                      <Typography variant="caption" sx={{ fontWeight: 700, color: '#6b7280', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                        {product.rating.toFixed(1)}
-                      </Typography>
-                    </Stack>
-
-                    {/* Price & Button */}
-                    <Stack direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mt: 3, pt: 3, borderTop: '1px solid #e5e7eb', gap: 1 }}>
-                      <Box>
-                        {product.discountPercentage > 0 && (
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              textDecoration: 'line-through',
-                              color: '#9ca3af',
-                              display: 'block',
-                              mb: 0.5,
-                              fontSize: { xs: '0.65rem', sm: '0.7rem' },
-                            }}
-                          >
-                            ${(product.price / (1 - product.discountPercentage / 100)).toFixed(2)}
-                          </Typography>
-                        )}
-                        <Typography
-                          sx={{
-                            fontSize: { xs: '0.95rem', sm: '1.1rem' },
-                            fontWeight: 800,
-                            color: '#4338ca',
-                          }}
-                        >
-                          ${product.price}
-                        </Typography>
-                      </Box>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        startIcon={<ShoppingCart sx={{ fontSize: { xs: 12, sm: 14 } }} />}
+                      {/* Gradient Overlay */}
+                      <Box
                         sx={{
-                          background: 'linear-gradient(135deg, #4338ca 0%, #7c3aed 100%)',
-                          textTransform: 'none',
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.02) 100%)',
+                          pointerEvents: 'none'
+                        }}
+                      />
+
+                      {/* Discount Badge */}
+                      {product.discountPercentage > 0 && (
+                        <Chip
+                          label={`-${Math.round(product.discountPercentage)}%`}
+                          size="small"
+                          sx={{
+                            position: 'absolute',
+                            top: 12,
+                            right: 12,
+                            background: 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)',
+                            color: 'white',
+                            fontWeight: 800,
+                            fontSize: '0.75rem',
+                            height: 28,
+                            borderRadius: 2,
+                            boxShadow: '0 4px 12px rgba(244, 63, 94, 0.4)',
+                          }}
+                        />
+                      )}
+
+                      {/* Favorite Button */}
+                      <IconButton
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleFavoriteClick(e, product.id);
+                        }}
+                        sx={{
+                          position: 'absolute',
+                          top: 12,
+                          left: 12,
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(8px)',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                          '&:hover': {
+                            backgroundColor: '#fff',
+                            transform: 'scale(1.1)',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                          },
+                        }}
+                        size="small"
+                      >
+                        {favoriteIds.includes(product.id) ? (
+                          <Favorite sx={{ color: '#f43f5e', fontSize: 20 }} />
+                        ) : (
+                          <FavoriteBorder sx={{ fontSize: 20 }} />
+                        )}
+                      </IconButton>
+                    </Box>
+
+                    {/* Content */}
+                    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      {/* Category */}
+                      <Chip
+                        label={product.category.replace(/-/g, ' ')}
+                        size="small"
+                        sx={{
+                          alignSelf: 'flex-start',
+                          mb: 1.5,
+                          background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+                          color: '#667eea',
                           fontWeight: 700,
-                          padding: { xs: '4px 8px', sm: '6px 12px' },
-                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                          flexShrink: 0,
+                          fontSize: '0.7rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          height: 24,
+                          borderRadius: 1.5,
+                          border: '1px solid rgba(102, 126, 234, 0.2)',
+                        }}
+                      />
+
+                      {/* Title */}
+                      <Typography
+                        sx={{
+                          fontSize: '1rem',
+                          fontWeight: 700,
+                          mb: 2,
+                          lineHeight: 1.3,
+                          height: '2.6em',
+                          overflow: 'hidden',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          color: '#1e293b',
                         }}
                       >
-                        Add
-                      </Button>
-                    </Stack>
-                  </Box>
-                </Box>
-              </Link>
-            ))}
-          </Box>
+                        {product.title}
+                      </Typography>
 
-          {/* Pagination */}
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Pagination
-              count={Math.ceil(total / itemsPerPage)}
-              page={currentPage}
-              onChange={handlePageChange}
-              color="primary"
-              size="large"
-            />
-          </Box>
-        </>
-      )}
-    </Container>
+                      {/* Rating */}
+                      <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 'auto' }}>
+                        <Rating 
+                          value={product.rating} 
+                          readOnly 
+                          size="small" 
+                          precision={0.5}
+                          sx={{ 
+                            color: '#fbbf24',
+                            '& .MuiRating-iconEmpty': {
+                              color: '#e5e7eb'
+                            }
+                          }} 
+                        />
+                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', fontSize: '0.8rem' }}>
+                          {product.rating.toFixed(1)}
+                        </Typography>
+                      </Stack>
+
+                      {/* Price & Button */}
+                      <Stack 
+                        direction="row" 
+                        justifyContent="space-between" 
+                        alignItems="center" 
+                        sx={{ mt: 3, pt: 3, borderTop: '1px solid rgba(0, 0, 0, 0.06)' }}
+                      >
+                        <Box>
+                          {product.discountPercentage > 0 && (
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                textDecoration: 'line-through',
+                                color: '#94a3b8',
+                                display: 'block',
+                                mb: 0.25,
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                              }}
+                            >
+                              ${(product.price / (1 - product.discountPercentage / 100)).toFixed(2)}
+                            </Typography>
+                          )}
+                          <Typography
+                            sx={{
+                              fontSize: '1.5rem',
+                              fontWeight: 800,
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              backgroundClip: 'text',
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                              lineHeight: 1,
+                            }}
+                          >
+                            ${product.price}
+                          </Typography>
+                        </Box>
+                        <IconButton
+                          className="add-to-cart-btn"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          sx={{
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            color: 'white',
+                            width: 42,
+                            height: 42,
+                            opacity: 0.8,
+                            transform: 'translateY(4px)',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)',
+                              transform: 'scale(1.1)',
+                              boxShadow: '0 6px 20px rgba(102, 126, 234, 0.5)',
+                            },
+                          }}
+                        >
+                          <ShoppingCart sx={{ fontSize: 20 }} />
+                        </IconButton>
+                      </Stack>
+                    </Box>
+                  </Paper>
+                </Link>
+              ))}
+            </Box>
+
+            {/* Pagination */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  borderRadius: 3,
+                  background: 'rgba(255, 255, 255, 0.8)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow: '0 4px 20px 0 rgba(0, 0, 0, 0.05)'
+                }}
+              >
+                <Pagination
+                  count={Math.ceil(total / itemsPerPage)}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  color="primary"
+                  size="large"
+                  sx={{
+                    '& .MuiPaginationItem-root': {
+                      fontWeight: 600,
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.2)',
+                      },
+                      '&.Mui-selected': {
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        fontWeight: 700,
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+                      }
+                    }
+                  }}
+                />
+              </Paper>
+            </Box>
+          </>
+        )}
+      </Container>
+    </Box>
   );
 }
