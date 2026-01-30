@@ -23,6 +23,7 @@ export const fetchProductsAsync = createAsyncThunk(
   'products/fetchAll',
   async ({ limit, skip, q, category }: { limit: number; skip: number; q?: string; category?: string | null }, { rejectWithValue }) => {
     try {
+
       return await fetchProducts(limit, skip, q, category);
     } catch (err: any) {
       return rejectWithValue(err.message);

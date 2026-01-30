@@ -1,167 +1,116 @@
 # Product Dashboard
 
-A modern, full-featured e-commerce product dashboard built with Next.js 15, Material UI, Redux Toolkit, and TypeScript. This application showcases advanced frontend development practices including SSR/CSR rendering strategies, state management, shopping cart functionality, and a premium glassmorphism UI design.
+A modern, full-featured e-commerce product dashboard built with **Next.js 16**, **React 19**, **Material UI v7**, **Redux Toolkit**, and **TypeScript**. This application showcases advanced frontend development practices including SSR/CSR rendering strategies, feature-based architecture, state management, shopping cart functionality, and a premium glassmorphism UI design.
 
 ## 🌟 Live Demo
 
 [View Live Demo](#) <!-- Add your deployment URL here -->
 
+## 🎥 Quick Look
+
+![Application Demo](./screenshots/demo.gif)
+
 ## 📸 Screenshots
+
+Please add the following images to the `screenshots` folder in the root directory.
 
 ### Product List Page
 
-<!-- Add screenshot here -->
+![Product List Page](./screenshots/product-list.png)
 
 _Modern product grid with advanced filtering, search, and sorting capabilities_
 
 ### Product Detail Page
 
-<!-- Add screenshot here -->
+![Product Detail Page](./screenshots/product-detail.png)
 
-_Comprehensive product information with reviews, specifications, and purchase options_
+_Comprehensive product information with gallery, specifications, and reviews_
 
-### Shopping Cart Drawer
+### Loading State
 
-<!-- Add screenshot here -->
+![Loading State](./screenshots/loading.png)
 
-_Intuitive cart management with quantity controls and real-time total calculation_
+_Smooth skeleton loading animations for better user experience_
 
-### Favorites Drawer
+### Error State
 
-<!-- Add screenshot here -->
+![Error State](./screenshots/error.png)
 
-_Save and manage favorite products with quick access and cart integration_
+_User-friendly error messages with retry functionality_
 
-## 🚀 Key Features
+## 🚀 Features
 
-### 🛍️ E-Commerce Functionality
+### 🛍️ Core E-Commerce
 
-- **Shopping Cart System**
-  - Add/remove products from cart
-  - Quantity management (increment/decrement)
-  - Real-time total calculation
-  - LocalStorage persistence
-  - Cart badge with item count
-  - Side drawer interface
+- **Smart Shopping Cart**: Real-time total calculation, quantity management, and persistent storage using LocalStorage.
+- **Favorites System**: Save products for later with quick access via a dedicated side drawer.
+- **Product Discovery**: Advanced filtering by category, dynamic sorting (price/rating), and instant search with debouncing.
+- **Product Details**: Comprehensive views with image galleries, specifications, and customer reviews.
 
-- **Favorites System**
-  - Save favorite products
-  - Quick view in dedicated drawer
-  - Direct add-to-cart from favorites
-  - LocalStorage persistence
-  - Favorites badge counter
+### 🎨 User Experience
 
-### 🎨 Premium UI/UX Design
-
-- **Modern Glassmorphism Design**
-  - Frosted glass effects with backdrop blur
-  - Gradient accents and smooth transitions
-  - Layered shadows for depth
-  - Hover animations and micro-interactions
-- **Responsive Layout**
-  - Mobile-first approach
-  - Adaptive grid system
-  - Touch-friendly controls
-  - Optimized for all screen sizes
-
-- **Interactive Elements**
-  - Smooth page transitions
-  - Loading skeletons
-  - Error boundaries
-  - Toast notifications
-
-### ⚡ Performance & Rendering
-
-- **Server-Side Rendering (SSR)**
-  - Initial product list fetch for SEO
-  - Product detail page pre-rendering
-  - Fast First Contentful Paint (FCP)
-- **Client-Side Rendering (CSR)**
-  - Dynamic pagination
-  - Real-time search with debouncing
-  - Instant filtering and sorting
-  - URL parameter synchronization
-
-### 🔧 Advanced Features
-
-- **Search & Filters**
-  - Debounced search (300ms delay)
-  - Category filtering with URL params
-  - Sort by price or rating
-  - Dynamic result updates
-
-- **State Management**
-  - Redux Toolkit slices
-  - Optimistic UI updates
-  - LocalStorage integration
-  - Hydration handling
-
-- **API Integration**
-  - Axios interceptors
-  - Request/Response logging
-  - Error normalization
-  - Loading state management
+- **Premium UI**: Modern glassmorphism design with backdrop blurs, gradient accents, and smooth transitions.
+- **Responsive Layout**: Fully adaptive design that works seamlessly on mobile, tablet, and desktop devices.
+- **Interactive Feedback**: Loading skeletons, toast notifications, and user-friendly error states.
 
 ## 🛠 Tech Stack
 
-| Category             | Technologies                   |
-| -------------------- | ------------------------------ |
-| **Framework**        | Next.js 15 (App Router)        |
-| **Language**         | TypeScript                     |
-| **State Management** | Redux Toolkit                  |
-| **UI Library**       | Material UI v6                 |
-| **HTTP Client**      | Axios                          |
-| **Styling**          | MUI System + Custom Theme      |
-| **Persistence**      | LocalStorage API               |
-| **Code Quality**     | ESLint, TypeScript Strict Mode |
+| Category             | Technologies            |
+| -------------------- | ----------------------- |
+| **Framework**        | Next.js 16 (App Router) |
+| **Core**             | React 19                |
+| **Language**         | TypeScript              |
+| **State Management** | Redux Toolkit           |
+| **UI Library**       | Material UI v7          |
+| **HTTP Client**      | Axios                   |
+| **Styling**          | MUI System + Emotion    |
+| **Persistence**      | LocalStorage API        |
+| **Linting**          | ESLint, Prettier        |
 
 ## 📦 Project Architecture
+
+The project follows a **Feature-Based Architecture** to ensure scalability and modularity.
 
 ```
 src/
 ├── app/                      # Next.js App Router
 │   ├── products/
 │   │   ├── [id]/
-│   │   │   └── page.tsx     # Product detail (SSR)
+│   │   │   └── page.tsx      # Product detail (SSR)
 │   │   └── page.tsx          # Product list (SSR)
 │   ├── layout.tsx            # Root layout with providers
 │   └── page.tsx              # Home page
 │
-├── components/
-│   ├── cart/
-│   │   └── CartDrawer.tsx   # Shopping cart side drawer
-│   ├── favorites/
-│   │   └── FavoritesDrawer.tsx # Favorites side drawer
-│   ├── layout/
-│   │   └── Navigation.tsx    # App header with badges
-│   └── products/
-│       ├── ProductsView.tsx  # Product grid with filters
-│       └── ProductDetailView.tsx # Product details
+├── components/               # Shared / Layout Components
+│   └── layout/
+│       └── Navigation.tsx    # App header with badges
 │
-├── store/
-│   ├── slices/
-│   │   ├── productSlice.ts   # Product state
-│   │   ├── cartSlice.ts      # Cart state
-│   │   ├── favoritesSlice.ts # Favorites state
-│   │   └── uiSlice.ts        # UI state
+├── features/                 # Feature-based Modules
+│   ├── cart/
+│   │   ├── components/       # e.g., CartDrawer.tsx
+│   │   ├── store/            # cartSlice.ts
+│   │   └── utils/            # storage.ts
+│   ├── favorites/
+│   │   ├── components/       # e.g., FavoritesDrawer.tsx
+│   │   ├── store/            # favoritesSlice.ts
+│   │   └── utils/            # storage.ts
+│   └── products/
+│       ├── components/       # ProductsView.tsx, ProductDetailView.tsx
+│       ├── services/         # productService.ts
+│       ├── store/            # productSlice.ts
+│       └── types/            # Type definitions
+│
+├── store/                    # Global Store Configuration
 │   ├── hooks.ts              # Typed Redux hooks
 │   └── store.ts              # Store configuration
 │
-├── services/
-│   └── productService.ts     # API service layer
-│
 ├── lib/
-│   ├── axios.ts              # Axios instance + interceptors
-│   ├── cart.ts               # Cart localStorage utilities
-│   └── localStorage.ts       # General storage utilities
-│
-├── types/
-│   └── index.ts              # TypeScript interfaces
+│   └── axios.ts              # Axios instance + interceptors
 │
 └── theme.ts                  # MUI theme customization
 ```
 
-## � Getting Started
+## 🏁 Getting Started
 
 ### Prerequisites
 
@@ -201,173 +150,36 @@ npm run start    # Start production server
 npm run lint     # Run ESLint
 ```
 
-## 🏗 Technical Implementation
+## 🏗 Technical Deep Dive
 
 ### Hybrid Rendering Strategy
 
-**Server-Side Rendering (SSR)**
+- **Server-Side Rendering (SSR)**: Used for the Product List and Product Detail pages to ensure optimal SEO and fast initial load times (First Contentful Paint).
+- **Client-Side Rendering (CSR)**: Used for interactive components like the Cart, Favorites drawer, and dynamic filtering to provide a snappy, app-like experience.
 
-- Initial page load fetches data on the server
-- SEO-friendly with pre-rendered content
-- Fast First Contentful Paint (FCP)
-- Implemented in `/products` and `/products/[id]`
+### State Management (Redux Toolkit)
 
-**Client-Side Rendering (CSR)**
+The application state is managed using Redux Toolkit with a normalized structure:
 
-- Interactive features after hydration
-- Instant UI updates without page refresh
-- URL synchronization with query params
-- Optimistic updates for better UX
+- **Products Slice**: Handles fetching, caching, and state of product data.
+- **Cart & Favorites Slices**: Manage user selections with automatic LocalStorage synchronization.
+- **UI Slice**: Controls global UI state like search queries and pagination.
 
-### State Management Architecture
+### Design System
 
-**Redux Slices**
+A custom Material UI theme is implemented with:
 
-```typescript
-// Product state
-products: {
-  items: Product[],
-  loading: boolean,
-  error: string | null
-}
-
-// Cart state
-cart: {
-  items: CartItem[],
-  isHydrated: boolean
-}
-
-// Favorites state
-favorites: {
-  favoriteIds: number[],
-  isHydrated: boolean
-}
-
-// UI state
-ui: {
-  searchQuery: string,
-  currentPage: number,
-  sortBy: 'price' | 'rating' | 'none',
-  selectedCategory: string | null
-}
-```
-
-### LocalStorage Persistence
-
-- **Cart**: Persists across sessions
-- **Favorites**: Saved permanently
-- **Hydration**: Loads on app initialization
-- **Sync**: Updates on every change
-
-### API Layer & Interceptors
-
-**Request Interceptors**
-
-- Adds `X-Request-Id` for tracing
-- Adds `X-Request-Time` timestamp
-- Enables request logging
-
-**Response Interceptors**
-
-- Normalizes error responses
-- Consistent error handling
-- User-friendly error messages
-
-## 🎯 Feature Highlights
-
-### Shopping Cart
-
-- ✅ Add products from list or detail page
-- ✅ Real-time quantity adjustment
-- ✅ Remove items with confirmation
-- ✅ Persistent storage (localStorage)
-- ✅ Badge counter on navbar
-- ✅ Total price calculation
-- ✅ Checkout button (ready for integration)
-
-### Favorites
-
-- ✅ Toggle favorites from any page
-- ✅ View all favorites in drawer
-- ✅ Quick add-to-cart from favorites
-- ✅ Remove from favorites
-- ✅ Persistent storage
-- ✅ Badge counter on navbar
-
-### Product Discovery
-
-- ✅ Debounced search (300ms)
-- ✅ Category filtering
-- ✅ Sort by price/rating
-- ✅ Pagination with URL sync
-- ✅ Responsive grid layout
-- ✅ Loading states
-
-## 🎨 Design System
-
-### Color Palette
-
-- **Primary**: Purple-Blue Gradient (`#667eea` → `#764ba2`)
-- **Accent**: Red Gradient (`#f43f5e` → `#e11d48`)
-- **Success**: Green (`#22c55e`)
-- **Warning**: Orange (`#fb923c`)
-
-### Typography
-
-- **Headings**: Inter, 800 weight
-- **Body**: Inter, 400-600 weight
-- **Special**: Gradient text effects
-
-### Effects
-
-- **Glassmorphism**: `backdrop-filter: blur(20px)`
-- **Shadows**: Layered, colored shadows
-- **Transitions**: 300ms ease
-- **Hover**: Scale, lift, glow effects
-
-## ✅ Requirements Checklist
-
-### Core Requirements
-
-- [x] Server-Side Rendering (SSR)
-- [x] Client-Side Rendering (CSR)
-- [x] Redux Toolkit state management
-- [x] Axios with interceptors
-- [x] Material UI responsive design
-- [x] TypeScript strict mode
-
-### Bonus Features
-
-- [x] Shopping cart functionality
-- [x] Favorites system
-- [x] LocalStorage persistence
-- [x] URL parameter sync
-- [x] Advanced filtering
-- [x] Premium glassmorphism UI
-- [x] Loading skeletons
-- [x] Error boundaries
-- [x] Mobile responsive
-
-## 🔍 Code Quality
-
-- **TypeScript**: Strict mode enabled
-- **ESLint**: Configured with React rules
-- **Component Structure**: Modular and reusable
-- **State Management**: Normalized and efficient
-- **Error Handling**: Comprehensive error boundaries
-- **Performance**: Optimized re-renders
+- **Typography**: Inter font family with carefully selected weights.
+- **Palette**: A vibrant color scheme featuring purple-blue gradients (`#667eea` → `#764ba2`) and functional status colors.
+- **Glassmorphism**: Extensive use of `backdrop-filter` and semi-transparent backgrounds for a modern aesthetic.
 
 ## 🚀 Future Enhancements
 
-- [ ] User authentication
-- [ ] Payment integration
-- [ ] Order history
-- [ ] Product reviews submission
-- [ ] Wishlist sharing
-- [ ] Dark mode support
-- [ ] Advanced analytics
-- [ ] Product comparison
-- [ ] Stock notifications
+- [ ] User Authentication & Profiles
+- [ ] Payment Gateway Integration
+- [ ] Order History & Tracking
+- [ ] Dark Mode Support
+- [ ] Comparison Tool
 
 ## 📝 License
 
@@ -375,7 +187,7 @@ This project is created as a technical assessment and is available for review pu
 
 ## 👤 Author
 
-**Berat Men**
+**Berat MEN**
 
 - GitHub: [@beratmen](https://github.com/beratmen)
 
@@ -387,4 +199,4 @@ This project is created as a technical assessment and is available for review pu
 
 ---
 
-**Built with ❤️ using Next.js, TypeScript, and Redux Toolkit**
+**Built with ❤️ using Next.js 16, React 19, and Redux Toolkit**

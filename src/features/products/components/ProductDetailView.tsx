@@ -1,17 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container, Grid, Typography, Box, Rating, Chip, Button,
-  Paper, Divider, CircularProgress, Alert, Stack, Avatar,
-  Table, TableBody, TableCell, TableContainer, TableRow,
-  IconButton
+  Paper, IconButton, CircularProgress, Alert, Stack, Avatar,
+  Table, TableBody, TableCell, TableRow
 } from '@mui/material';
-import { Product } from '@/features/products/types';
+import { Product, Review } from '@/features/products/types';
 import { fetchProductById } from '@/features/products/services/productService';
 import { 
   Refresh, ArrowBack, ShoppingCart, Favorite, FavoriteBorder,
-  LocalShipping
+  LocalShipping, Verified, Star
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -22,19 +21,31 @@ interface ProductDetailViewProps {
   product: Product;
 }
 
+
+
 export default function ProductDetailView({ product: initialProduct }: ProductDetailViewProps) {
   const dispatch = useAppDispatch();
   const { favoriteIds } = useAppSelector((state) => state.favorites);
   const [product, setProduct] = useState<Product>(initialProduct);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState(product.images?.[0] || product.thumbnail);
+
+  
   const isFavorite = favoriteIds.includes(product.id);
+
+  // Update selected image if product changes
+  useEffect(() => {
+    setProduct(initialProduct);
+    setSelectedImage(initialProduct.images?.[0] || initialProduct.thumbnail);
+  }, [initialProduct]);
 
   const handleRefresh = async () => {
     setLoading(true);
     try {
       const refreshedProduct = await fetchProductById(String(product.id));
       setProduct(refreshedProduct);
+      setSelectedImage(refreshedProduct.images?.[0] || refreshedProduct.thumbnail);
     } catch (err) {
       setError('Failed to refresh data');
     } finally {
@@ -50,495 +61,301 @@ export default function ProductDetailView({ product: initialProduct }: ProductDe
     dispatch(addToCart(product));
   };
 
+
+
   return (
     <Box sx={{ 
       minHeight: '100vh',
-      background: 'linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%)',
+      bgcolor: '#f8fafc',
       pb: 8
     }}>
-      <Container maxWidth="lg" sx={{ pt: 6 }}>
-        {/* Navigation */}
-        <Box sx={{ mb: 4 }}>
+      {/* Navigation Bar */}
+      <Box sx={{ bgcolor: 'white', borderBottom: '1px solid', borderColor: 'divider', py: 2 }}>
+        <Container maxWidth="xl">
           <Button 
             component={Link} 
             href="/products" 
             startIcon={<ArrowBack />} 
             sx={{ 
-              color: 'text.secondary',
+              color: 'text.primary',
               textTransform: 'none',
-              fontSize: '1rem',
               fontWeight: 600,
-              transition: 'all 0.3s ease',
-              '&:hover': { 
-                color: 'primary.main',
-                bgcolor: 'transparent',
-                transform: 'translateX(-4px)'
-              } 
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' }
             }}
           >
             Back to Products
           </Button>
-        </Box>
+        </Container>
+      </Box>
 
+      <Container maxWidth="xl" sx={{ pt: 4 }}>
         {error && (
-          <Alert 
-            severity="error" 
-            sx={{ 
-              mb: 4, 
-              borderRadius: 3,
-              backdropFilter: 'blur(10px)',
-              background: 'rgba(239, 68, 68, 0.05)',
-              border: '1px solid rgba(239, 68, 68, 0.2)'
-            }}
-          >
+          <Alert severity="error" sx={{ mb: 4, borderRadius: 2 }}>
             {error}
           </Alert>
         )}
 
-        {/* Main Product Section */}
-        <Grid container spacing={4} sx={{ mb: 8 }}>
-          {/* Left Column: Images */}
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Box sx={{ position: 'sticky', top: 100 }}>
+        <Grid container spacing={6}>
+          {/* Left Column: Image Gallery */}
+          <Grid size={{ xs: 12, md: 7 }}>
+            <Stack spacing={2}>
+              {/* Main Image */}
               <Paper 
-                elevation={0} 
+                elevation={0}
                 sx={{ 
-                  p: 4, 
-                  background: 'linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)',
-                  borderRadius: 4, 
-                  border: '1px solid',
-                  borderColor: 'rgba(0, 0, 0, 0.06)',
+                  height: { xs: 300, sm: 400, md: 500 },
+                  bgcolor: 'white',
+                  borderRadius: 4,
+                  overflow: 'hidden',
+                  position: 'relative',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  overflow: 'hidden',
-                  height: '450px',
-                  position: 'relative',
-                  transition: 'all 0.4s ease',
-                  '&:hover': {
-                    boxShadow: '0 20px 40px -12px rgba(102, 126, 234, 0.15)',
-                    '& .product-main-image': {
-                      transform: 'scale(1.05)',
-                    }
-                  }
+                  border: '1px solid',
+                  borderColor: 'divider'
                 }}
               >
                 <Box
-                  className="product-main-image"
                   component="img"
-                  src={product.thumbnail}
+                  src={selectedImage}
                   alt={product.title}
                   sx={{ 
-                    width: '100%', 
-                    height: '100%', 
+                    maxWidth: '100%', 
+                    maxHeight: '100%', 
                     objectFit: 'contain',
-                    mixBlendMode: 'multiply',
-                    transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    p: 4
                   }}
                 />
-                {/* Gradient Overlay */}
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.02) 100%)',
-                    pointerEvents: 'none'
-                  }}
-                />
-              </Paper>
-            </Box>
-          </Grid>
-
-          {/* Center Column: Product Info */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Box>
-              <Chip
-                label={product.brand}
-                size="small"
-                sx={{
-                  mb: 2,
-                  background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-                  color: '#667eea',
-                  fontWeight: 700,
-                  fontSize: '0.75rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  height: 28,
-                  borderRadius: 2,
-                  border: '1px solid rgba(102, 126, 234, 0.2)',
-                }}
-              />
-              <Typography 
-                variant="h3" 
-                component="h1" 
-                fontWeight={800} 
-                sx={{ 
-                  mb: 2, 
-                  lineHeight: 1.2,
-                  color: '#1e293b',
-                  letterSpacing: '-0.02em'
-                }}
-              >
-                {product.title}
-              </Typography>
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 4 }}>
-                <Rating 
-                  value={product.rating} 
-                  readOnly 
-                  precision={0.5} 
-                  size="small"
-                  sx={{ 
-                    color: '#fbbf24',
-                    '& .MuiRating-iconEmpty': {
-                      color: '#e5e7eb'
-                    }
-                  }}
-                />
-                <Typography variant="body2" fontWeight={700} color="text.secondary">
-                  {product.rating.toFixed(1)} <Typography component="span" color="text.disabled">({product.reviews?.length || 0} reviews)</Typography>
-                </Typography>
-              </Stack>
-
-              <Typography 
-                variant="body1" 
-                paragraph 
-                sx={{ 
-                  fontSize: '1.05rem', 
-                  color: '#64748b', 
-                  lineHeight: 1.8
-                }}
-              >
-                {product.description}
-              </Typography>
-            </Box>
-          </Grid>
-
-          {/* Right Column: Buy Box */}
-          <Grid size={{ xs: 12, md: 3 }}>
-            <Paper 
-              elevation={0}
-              sx={{ 
-                p: 4, 
-                borderRadius: 4, 
-                position: 'sticky', 
-                top: 100,
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(0, 0, 0, 0.06)',
-                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.12)',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  boxShadow: '0 12px 40px rgba(102, 126, 234, 0.18)',
-                }
-              }}
-            >
-              <Box sx={{ mb: 4 }}>
-                <Stack direction="row" alignItems="baseline" spacing={1.5} sx={{ mb: 1 }}>
-                  <Typography 
-                    variant="h3" 
-                    fontWeight={900} 
-                    sx={{
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      backgroundClip: 'text',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    ${product.price}
-                  </Typography>
-                  {product.discountPercentage > 0 && (
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                        textDecoration: 'line-through', 
-                        color: '#94a3b8', 
-                        fontWeight: 600 
-                      }}
-                    >
-                      ${(product.price / (1 - product.discountPercentage / 100)).toFixed(2)}
-                    </Typography>
-                  )}
-                </Stack>
+                
                 {product.discountPercentage > 0 && (
-                  <Chip 
-                    label={`Save ${Math.round(product.discountPercentage)}%`} 
-                    size="small"
+                  <Chip
+                    label={`-${Math.round(product.discountPercentage)}%`}
+                    color="error"
                     sx={{
-                      background: 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)',
-                      color: 'white',
-                      fontWeight: 800,
-                      borderRadius: 2,
-                      height: 28,
-                      boxShadow: '0 4px 12px rgba(244, 63, 94, 0.3)',
+                      position: 'absolute',
+                      top: 24,
+                      left: 24,
+                      fontWeight: 700,
+                      height: 32,
+                      px: 1
                     }}
                   />
                 )}
-              </Box>
-
-              <Paper
-                elevation={0}
-                sx={{
-                  mb: 4,
-                  p: 2.5,
-                  borderRadius: 3,
-                  background: product.stock > 5 
-                    ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(22, 163, 74, 0.05) 100%)'
-                    : 'linear-gradient(135deg, rgba(251, 146, 60, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%)',
-                  border: '1px solid',
-                  borderColor: product.stock > 5 ? 'rgba(34, 197, 94, 0.2)' : 'rgba(251, 146, 60, 0.2)',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-                  <Box sx={{ 
-                    width: 12, 
-                    height: 12, 
-                    borderRadius: '50%', 
-                    bgcolor: product.stock > 5 ? '#22c55e' : '#fb923c',
-                    boxShadow: product.stock > 5 
-                      ? '0 0 0 3px rgba(34, 197, 94, 0.2)'
-                      : '0 0 0 3px rgba(251, 146, 60, 0.2)',
-                  }} />
-                  <Typography 
-                    variant="body2" 
-                    fontWeight={800} 
-                    color={product.stock > 5 ? 'success.main' : 'warning.main'}
-                  >
-                    {product.stock > 5 ? 'In Stock' : 'Low Stock'}
-                  </Typography>
-                </Box>
-                <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                  <LocalShipping sx={{ fontSize: 14, mr: 0.5, verticalAlign: 'middle' }} />
-                  Ships from Turkey
-                </Typography>
               </Paper>
 
-              <Stack spacing={2}>
-                <Button 
-                  variant="contained" 
-                  size="large" 
-                  startIcon={<ShoppingCart />} 
-                  onClick={handleAddToCart}
-                  fullWidth
-                  sx={{ 
-                    fontWeight: 800, 
-                    py: 1.8,
-                    fontSize: '1rem',
-                    borderRadius: 3,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    boxShadow: '0 8px 20px rgba(102, 126, 234, 0.4)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 12px 28px rgba(102, 126, 234, 0.5)',
-                      background: 'linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)',
-                    }
-                  }}
-                >
-                  Add to Cart
-                </Button>
-                <Button 
-                  variant="outlined" 
-                  size="large"
-                  onClick={handleAddToFavorite}
-                  startIcon={isFavorite ? <Favorite /> : <FavoriteBorder />}
-                  fullWidth
-                  sx={{ 
-                    fontWeight: 700,
-                    py: 1.8,
-                    fontSize: '1rem',
-                    borderRadius: 3,
-                    borderWidth: 2,
-                    borderColor: isFavorite ? '#f43f5e' : 'rgba(0, 0, 0, 0.12)',
-                    color: isFavorite ? '#f43f5e' : 'text.primary',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      borderWidth: 2,
-                      borderColor: '#f43f5e',
-                      color: '#f43f5e',
-                      bgcolor: 'rgba(244, 63, 94, 0.05)',
-                      transform: 'translateY(-2px)',
-                    }
-                  }}
-                >
-                  {isFavorite ? 'Favorited' : 'Add to Favorites'}
-                </Button>
-              </Stack>
-            </Paper>
-          </Grid>
-        </Grid>
-
-        {/* Bottom Sections: Specifications and Reviews */}
-        <Grid container spacing={4}>
-          {/* Specifications */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 4,
-                borderRadius: 4,
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(0, 0, 0, 0.06)',
-                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.08)',
-              }}
-            >
-              <Typography variant="h5" fontWeight={800} sx={{ mb: 3, color: '#1e293b' }}>
-                Specifications
-              </Typography>
-              <Paper
-                elevation={0}
-                sx={{
-                  borderRadius: 3,
-                  overflow: 'hidden',
-                  border: '1px solid',
-                  borderColor: 'rgba(0, 0, 0, 0.06)',
-                  background: 'rgba(255, 255, 255, 0.6)',
-                  backdropFilter: 'blur(10px)',
-                }}
-              >
-                <Table>
-                  <TableBody>
-                    <TableRow sx={{ '&:hover': { bgcolor: 'rgba(102, 126, 234, 0.03)' } }}>
-                      <TableCell 
-                        component="th" 
-                        scope="row" 
-                        sx={{ 
-                          width: '40%', 
-                          fontWeight: 700, 
-                          color: '#64748b',
-                          borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-                          py: 2.5
-                        }}
-                      >
-                        Brand
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: 700, borderBottom: '1px solid rgba(0, 0, 0, 0.06)', py: 2.5 }}>
-                        {product.brand}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow sx={{ '&:hover': { bgcolor: 'rgba(102, 126, 234, 0.03)' } }}>
-                      <TableCell 
-                        component="th" 
-                        scope="row" 
-                        sx={{ 
-                          fontWeight: 700, 
-                          color: '#64748b',
-                          borderBottom: 'none',
-                          py: 2.5
-                        }}
-                      >
-                        Category
-                      </TableCell>
-                      <TableCell sx={{ textTransform: 'capitalize', borderBottom: 'none', py: 2.5 }}>
-                        {product.category.replace(/-/g, ' ')}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </Paper>
-            </Paper>
-          </Grid>
-
-          {/* Reviews */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 4,
-                borderRadius: 4,
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(0, 0, 0, 0.06)',
-                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.08)',
-              }}
-            >
-              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
-                <Typography variant="h5" fontWeight={800} sx={{ color: '#1e293b' }}>
-                  Reviews
-                </Typography>
-                <Button 
-                  startIcon={loading ? <CircularProgress size={16} /> : <Refresh />} 
-                  onClick={handleRefresh}
-                  disabled={loading}
-                  size="small"
-                  sx={{ 
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    borderRadius: 2,
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                    }
-                  }}
-                >
-                  Refresh
-                </Button>
-              </Stack>
-              
-              <Stack spacing={2}>
-                {product.reviews && product.reviews.length > 0 ? (
-                  product.reviews.map((review, index) => (
-                    <Paper 
-                      key={index} 
-                      elevation={0} 
-                      sx={{ 
-                        p: 3, 
-                        background: 'rgba(255, 255, 255, 0.6)',
-                        backdropFilter: 'blur(10px)',
-                        borderRadius: 3,
-                        border: '1px solid rgba(0, 0, 0, 0.06)',
-                        transition: 'all 0.3s ease',
+              {/* Thumbnails */}
+              {product.images && product.images.length > 1 && (
+                <Stack direction="row" spacing={2} sx={{ overflowX: 'auto', py: 1, px: 1 }}>
+                  {product.images.map((img, index) => (
+                    <Paper
+                      key={index}
+                      elevation={0}
+                      onClick={() => setSelectedImage(img)}
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        minWidth: 80,
+                        borderRadius: 2,
+                        cursor: 'pointer',
+                        border: '2px solid',
+                        borderColor: selectedImage === img ? 'primary.main' : 'transparent',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'white',
+                        transition: 'all 0.2s ease',
                         '&:hover': {
-                          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.06)',
                           transform: 'translateY(-2px)',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                         }
                       }}
                     >
-                      <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 1.5 }}>
-                        <Avatar 
-                          sx={{ 
-                            width: 36, 
-                            height: 36, 
-                            fontSize: '0.9rem', 
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            fontWeight: 700
-                          }}
-                        >
-                          {review.reviewerName[0]}
-                        </Avatar>
-                        <Box sx={{ flex: 1 }}>
-                          <Typography variant="subtitle2" fontWeight={700}>
-                            {review.reviewerName}
-                          </Typography>
-                        </Box>
-                        <Rating value={review.rating} size="small" readOnly sx={{ color: '#fbbf24' }} />
-                      </Stack>
-                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                        "{review.comment}"
-                      </Typography>
+                      <Box
+                        component="img"
+                        src={img}
+                        alt={`Thumbnail ${index + 1}`}
+                        sx={{ width: '100%', height: '100%', objectFit: 'contain', p: 1 }}
+                      />
                     </Paper>
-                  ))
-                ) : (
-                  <Paper
-                    elevation={0}
+                  ))}
+                </Stack>
+              )}
+            </Stack>
+          </Grid>
+
+          {/* Right Column: Product Info */}
+          <Grid size={{ xs: 12, md: 5 }}>
+            <Box sx={{ position: { md: 'sticky' }, top: 100 }}>
+              <Stack spacing={3}>
+                <Box>
+                  <Typography variant="overline" color="text.secondary" fontWeight={700} sx={{ letterSpacing: 1 }}>
+                    {product.brand} • {product.category.toUpperCase()}
+                  </Typography>
+                  <Typography variant="h3" component="h1" fontWeight={800} sx={{ mt: 1, mb: 1, color: '#1a1a1a' }}>
+                    {product.title}
+                  </Typography>
+                  
+                  <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+                    <Rating value={product.rating} precision={0.5} readOnly size="small" />
+                    <Typography variant="body2" fontWeight={600} color="text.secondary">
+                      {product.rating.toFixed(1)} ({product.reviews?.length || 0} reviews)
+                    </Typography>
+                  </Stack>
+                </Box>
+
+                <Box sx={{ py: 2, borderTop: '1px solid', borderBottom: '1px solid', borderColor: 'divider' }}>
+                  <Stack direction="row" alignItems="baseline" spacing={2}>
+                    <Typography variant="h3" fontWeight={700} color="primary.main">
+                      ${product.price}
+                    </Typography>
+                    {product.discountPercentage > 0 && (
+                      <Typography variant="h5" color="text.secondary" sx={{ textDecoration: 'line-through' }}>
+                        ${(product.price / (1 - product.discountPercentage / 100)).toFixed(2)}
+                      </Typography>
+                    )}
+                  </Stack>
+                  <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
+                    <Box sx={{ 
+                      width: 8, height: 8, borderRadius: '50%', 
+                      bgcolor: product.stock > 5 ? 'success.main' : 'warning.main'
+                    }} />
+                    <Typography variant="body2" color={product.stock > 5 ? 'success.main' : 'warning.main'} fontWeight={600}>
+                      {product.stock > 5 ? 'In Stock' : 'Low Stock'} • Ships from Turkey
+                    </Typography>
+                  </Stack>
+                </Box>
+
+                <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
+                  {product.description}
+                </Typography>
+
+                <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    startIcon={<ShoppingCart />}
+                    onClick={handleAddToCart}
                     sx={{
-                      py: 4,
-                      textAlign: 'center',
-                      background: 'rgba(255, 255, 255, 0.6)',
-                      backdropFilter: 'blur(10px)',
+                      py: 1.5,
                       borderRadius: 3,
-                      border: '1px solid rgba(0, 0, 0, 0.06)',
+                      fontSize: '1.1rem',
+                      fontWeight: 700,
+                      textTransform: 'none',
+                      boxShadow: '0 8px 16px rgba(102, 126, 234, 0.24)',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      '&:hover': {
+                         background: 'linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)',
+                      }
                     }}
                   >
-                    <Typography color="text.secondary" fontWeight={600}>
-                      No reviews yet
-                    </Typography>
-                  </Paper>
-                )}
+                    Add to Cart
+                  </Button>
+                  <IconButton
+                    onClick={handleAddToFavorite}
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      border: '2px solid',
+                      borderColor: isFavorite ? 'error.main' : 'divider',
+                      color: isFavorite ? 'error.main' : 'text.secondary',
+                      borderRadius: 3,
+                      '&:hover': {
+                        bgcolor: 'error.lighter',
+                        borderColor: 'error.main',
+                        color: 'error.main'
+                      }
+                    }}
+                  >
+                    {isFavorite ? <Favorite /> : <FavoriteBorder />}
+                  </IconButton>
+                </Stack>
+
+                {/* Specifications */}
+                <Paper elevation={0} sx={{ mt: 4, borderRadius: 4, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
+                  <Typography variant="subtitle1" fontWeight={700} sx={{ p: 2, bgcolor: '#f1f5f9', borderBottom: '1px solid', borderColor: 'divider' }}>
+                    Specifications
+                  </Typography>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell sx={{ color: 'text.secondary', fontWeight: 600, borderBottom: '1px solid #f1f5f9' }}>Brand</TableCell>
+                        <TableCell sx={{ fontWeight: 600, borderBottom: '1px solid #f1f5f9' }}>{product.brand}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ color: 'text.secondary', fontWeight: 600, borderBottom: '1px solid #f1f5f9' }}>Category</TableCell>
+                        <TableCell sx={{ textTransform: 'capitalize', fontWeight: 600, borderBottom: '1px solid #f1f5f9' }}>{product.category.replace('-', ' ')}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ color: 'text.secondary', fontWeight: 600, borderBottom: 'none' }}>SKU</TableCell>
+                        <TableCell sx={{ fontWeight: 600, borderBottom: 'none' }}>PRD-{product.id.toString().padStart(6, '0')}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </Paper>
               </Stack>
-            </Paper>
+            </Box>
           </Grid>
         </Grid>
+
+        {/* Reviews Section */}
+        <Box sx={{ mt: 8, mb: 4 }}>
+          <Typography variant="h4" fontWeight={800} sx={{ mb: 4, color: '#1e293b' }}>
+            Customer Reviews ({product.reviews?.length || 0})
+          </Typography>
+          
+          <Grid container spacing={4}>
+            {product.reviews && product.reviews.length > 0 ? (
+              product.reviews.map((review, idx) => (
+                <Grid size={{ xs: 12, md: 6 }} key={idx}>
+                  <Paper 
+                    elevation={0}
+                    sx={{ 
+                      p: 3, 
+                      bgcolor: 'white', 
+                      borderRadius: 3,
+                      height: '100%',
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                         boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                         borderColor: 'primary.main'
+                      }
+                    }}
+                  >
+                    <Stack direction="row" spacing={2} alignItems="flex-start">
+                      <Avatar sx={{ width: 48, height: 48, bgcolor: 'primary.main', fontSize: '1.2rem', fontWeight: 700 }}>
+                        {review.reviewerName[0]}
+                      </Avatar>
+                      <Box sx={{ flex: 1 }}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
+                          <Typography variant="subtitle1" fontWeight={700}>
+                            {review.reviewerName}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(review.date).toLocaleDateString()}
+                          </Typography>
+                        </Stack>
+                        <Rating value={review.rating} size="small" readOnly sx={{ mb: 1.5 }} />
+                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                          "{review.comment}"
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Paper>
+                </Grid>
+              ))
+            ) : (
+              <Grid size={{ xs: 12 }}>
+                <Paper sx={{ p: 4, textAlign: 'center', bgcolor: 'white', borderRadius: 3 }}>
+                  <Typography color="text.secondary">No reviews yet for this product.</Typography>
+                </Paper>
+              </Grid>
+            )}
+          </Grid>
+        </Box>
       </Container>
     </Box>
   );
