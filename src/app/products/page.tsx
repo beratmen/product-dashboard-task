@@ -1,5 +1,5 @@
-import { fetchProducts } from '@/services/productService';
-import ProductsView from '@/components/products/ProductsView';
+import { fetchProducts } from '@/features/products/services/productService';
+import ProductsView from '@/features/products/components/ProductsView';
 
 export default async function ProductsPage() {
   // SSR Fetch

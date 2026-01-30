@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getFavorites, saveFavorites } from '@/lib/localStorage';
+import { getFavorites, saveFavorites } from '@/features/favorites/utils/storage';
 
 interface FavoritesState {
   favoriteIds: number[];

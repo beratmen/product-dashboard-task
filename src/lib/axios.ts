@@ -18,11 +18,10 @@ interface NormalizedError {
 // Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Add request ID for tracking
-    config.headers['X-Request-Id'] = crypto.randomUUID();
-    
-    // Add timestamp
-    config.headers['X-Request-Time'] = new Date().toISOString();
+    if (config.headers) {
+      config.headers['X-Request-Id'] = crypto.randomUUID();
+      config.headers['X-Request-Time'] = new Date().toISOString();
+    }
     
     return config;
   },
@@ -42,8 +41,9 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
+    const data = error.response?.data as any;
     const normalizedError: NormalizedError = {
-      message: error.response?.data?.message as string || error.message || 'An unknown error occurred',
+      message: (data?.message as string) || error.message || 'An unknown error occurred',
       status: error.response?.status || 500,
       code: error.code,
       timestamp: new Date().toISOString(),

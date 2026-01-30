@@ -1,4 +1,4 @@
-import { Product } from '@/types';
+import { Product } from '@/features/products/types';
 
 const CART_KEY = 'product-dashboard-cart';
 

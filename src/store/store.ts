@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import productReducer from './slices/productSlice';
+import productReducer from '@/features/products/store/productSlice';
 import uiReducer from './slices/uiSlice';
-import favoritesReducer from './slices/favoritesSlice';
-import cartReducer from './slices/cartSlice';
+import favoritesReducer from '@/features/favorites/store/favoritesSlice';
+import cartReducer from '@/features/cart/store/cartSlice';
 
 export const makeStore = () => {
   return configureStore({

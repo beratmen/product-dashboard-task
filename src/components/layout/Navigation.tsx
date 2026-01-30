@@ -4,10 +4,10 @@ import { AppBar, Toolbar, Typography, Container, Box, IconButton, Stack, Badge, 
 import { ShoppingBag, Person, Search, Favorite, FavoriteBorder, ShoppingCart } from '@mui/icons-material';
 import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { loadCart } from '@/store/slices/cartSlice';
+import { loadCart } from '@/features/cart/store/cartSlice';
 import { useEffect } from 'react';
-import CartDrawer from '@/components/cart/CartDrawer';
-import FavoritesDrawer from '@/components/favorites/FavoritesDrawer';
+import CartDrawer from '@/features/cart/components/CartDrawer';
+import FavoritesDrawer from '@/features/favorites/components/FavoritesDrawer';
 
 export default function Navigation() {
   const dispatch = useAppDispatch();

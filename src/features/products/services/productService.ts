@@ -1,5 +1,5 @@
 import axiosInstance from '@/lib/axios';
-import { Product, ProductResponse } from '@/types';
+import { Product, ProductResponse } from '@/features/products/types';
 
 const handleApiError = (error: any, context: string) => {
   const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
@@ -72,13 +72,20 @@ export const fetchProductById = async (id: string): Promise<Product> => {
 
 export const fetchCategories = async (): Promise<string[]> => {
   try {
-    const response = await axiosInstance.get<string[]>('/products/categories');
+    const response = await axiosInstance.get<any>('/products/categories');
     
-    if (!Array.isArray(response.data)) {
-      throw new Error('Invalid categories data format');
+    // API returns array of objects with slug, name, url
+    // We need to extract just the slug values
+    if (Array.isArray(response.data)) {
+      return response.data.map((cat: any) => {
+        // If it's already a string, return it
+        if (typeof cat === 'string') return cat;
+        // If it's an object, extract the slug
+        return cat.slug || cat.name || String(cat);
+      });
     }
     
-    return response.data;
+    return [];
   } catch (error) {
     handleApiError(error, 'fetchCategories');
     // Return empty array on error to prevent app crash

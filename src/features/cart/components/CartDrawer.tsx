@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { Close, Delete, Add, Remove, ShoppingCartOutlined } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { removeFromCart, updateQuantity } from '@/store/slices/cartSlice';
+import { removeFromCart, updateQuantity } from '@/features/cart/store/cartSlice';
 import Link from 'next/link';
 
 interface CartDrawerProps {

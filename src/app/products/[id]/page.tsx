@@ -1,5 +1,5 @@
-import { fetchProductById } from '@/services/productService';
-import ProductDetailView from '@/components/products/ProductDetailView';
+import { fetchProductById } from '@/features/products/services/productService';
+import ProductDetailView from '@/features/products/components/ProductDetailView';
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

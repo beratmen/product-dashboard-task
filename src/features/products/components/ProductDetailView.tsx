@@ -7,15 +7,16 @@ import {
   Table, TableBody, TableCell, TableContainer, TableRow,
   IconButton
 } from '@mui/material';
-import { Product } from '@/types';
-import { fetchProductById } from '@/services/productService';
+import { Product } from '@/features/products/types';
+import { fetchProductById } from '@/features/products/services/productService';
 import { 
   Refresh, ArrowBack, ShoppingCart, Favorite, FavoriteBorder,
   LocalShipping
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { toggleFavorite } from '@/store/slices/favoritesSlice';
+import { toggleFavorite } from '@/features/favorites/store/favoritesSlice';
+import { addToCart } from '@/features/cart/store/cartSlice';
 
 interface ProductDetailViewProps {
   product: Product;
@@ -43,6 +44,10 @@ export default function ProductDetailView({ product: initialProduct }: ProductDe
 
   const handleAddToFavorite = () => {
     dispatch(toggleFavorite(product.id));
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product));
   };
 
   return (
@@ -312,6 +317,7 @@ export default function ProductDetailView({ product: initialProduct }: ProductDe
                   variant="contained" 
                   size="large" 
                   startIcon={<ShoppingCart />} 
+                  onClick={handleAddToCart}
                   fullWidth
                   sx={{ 
                     fontWeight: 800, 

@@ -6,10 +6,10 @@ import {
 } from '@mui/material';
 import { Close, FavoriteBorder, Delete, ShoppingCart } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { toggleFavorite } from '@/store/slices/favoritesSlice';
-import { addToCart } from '@/store/slices/cartSlice';
+import { toggleFavorite } from '@/features/favorites/store/favoritesSlice';
+import { addToCart } from '@/features/cart/store/cartSlice';
 import Link from 'next/link';
-import { Product } from '@/types';
+import { Product } from '@/features/products/types';
 
 interface FavoritesDrawerProps {
   open: boolean;

@@ -7,15 +7,15 @@ import {
 } from '@mui/material';
 import { Search as SearchIcon, ShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchProductsAsync, setProducts } from '@/store/slices/productSlice';
+import { fetchProductsAsync, setProducts } from '@/features/products/store/productSlice';
 import { setSearchQuery, setPage, setSortBy, setCategory } from '@/store/slices/uiSlice';
-import { toggleFavorite, loadFavorites } from '@/store/slices/favoritesSlice';
-import { addToCart, loadCart } from '@/store/slices/cartSlice';
-import { ProductResponse } from '@/types';
+import { toggleFavorite, loadFavorites } from '@/features/favorites/store/favoritesSlice';
+import { addToCart, loadCart } from '@/features/cart/store/cartSlice';
+import { ProductResponse } from '@/features/products/types';
 import { debounce } from '@/utils/debounce';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { fetchCategories } from '@/services/productService';
+import { fetchCategories } from '@/features/products/services/productService';
 
 interface ProductsViewProps {
   initialData: ProductResponse;
