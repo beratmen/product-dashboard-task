@@ -1,36 +1,153 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Product Dashboard
 
-## Getting Started
+A modern, responsive product dashboard built with Next.js, Material UI, Redux Toolkit, and Axios. This application demonstrates Server-Side Rendering (SSR), Client-Side Rendering (CSR), and advanced state management.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Server-Side Rendering (SSR)**
+  - Initial product list fetch for SEO and performance
+  - Product detail page pre-rendering
+- **Client-Side Rendering (CSR)**
+  - Dynamic pagination
+  - Debounced search functionality
+  - Sorting (Price, Rating)
+  - Category filtering
+  - Review refresh on product details
+- **State Management**
+  - Redux Toolkit for centralized state
+  - Persistent behaviors (Favorites) via localStorage
+- **Network Layer**
+  - Centralized Axios instance
+  - Request interceptors (Request ID, Timestamp)
+  - Normalized error handling
+- **UI/UX**
+  - Material UI v6 with custom theme
+  - Responsive Grid Layout
+  - Glassmorphism effects
+  - Loading skeletons & Error boundaries
+
+## 🛠 Tech Stack
+
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **State**: [Redux Toolkit](https://redux-toolkit.js.org/)
+- **Styling**: [Material UI (MUI)](https://mui.com/)
+- **HTTP Client**: [Axios](https://axios-http.com/)
+- **Linting**: ESLint + Prettier
+
+## 📦 Project Structure
+
+```
+src/
+├── app/                  # App Router pages
+│   ├── products/         # Product routes
+│   │   ├── [id]/         # Product details (SSR)
+│   │   └── page.tsx      # Product list (SSR)
+│   ├── layout.tsx        # Root layout with Providers
+│   └── page.tsx          # Home redirect
+├── components/           # Reusable UI components
+│   ├── layout/           # App shell (AppBar, etc.)
+│   └── products/         # Product-specific components
+│       ├── ProductCard.tsx
+│       ├── ProductsView.tsx
+│       └── ...
+├── lib/                  # Utilities & configurations
+│   ├── axios.ts          # Axios instance + interceptors
+│   └── localStorage.ts   # Browser storage helpers
+├── services/             # API service layer
+│   └── productService.ts # Data fetching logic
+├── store/                # Redux store setup
+│   ├── slices/           # Redux slices (products, ui, favorites)
+│   ├── hooks.ts          # Typed Redux hooks
+│   └── store.ts          # Store configuration
+├── theme.ts              # MUI Theme customization
+└── types/                # TypeScript interfaces
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Clone the repository**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    ```bash
+    git clone <repository-url>
+    cd product-dashboard-task
+    ```
 
-## Learn More
+2.  **Install dependencies**
 
-To learn more about Next.js, take a look at the following resources:
+    ```bash
+    npm install
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3.  **Run the development server**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    ```bash
+    npm run dev
+    ```
 
-## Deploy on Vercel
+4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🏗 Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Hybrid Rendering Strategy
+
+- **SSR (Server-Side Rendering)**:
+  - The main `/products` page fetches the initial list of 20 products on the server.
+  - Individual product pages `/products/[id]` fetch product details on the server.
+  - This ensures fast First Contentful Paint (FCP) and SEO friendliness.
+
+- **CSR (Client-Side Rendering)**:
+  - After hydration, Redux takes over for interactive features.
+  - Pagination, filtering, and sorting trigger client-side API calls.
+  - The UI updates instantly while keeping the URL in sync (e.g., `?category=smartphones`).
+
+### State Management (Redux)
+
+The store is split into efficiently managed slices:
+
+- **`products`**: Stores the list of products, current product detail, loading states, and API errors.
+- **`ui`**: Manages volatile UI state like search queries, sort order, and pagination.
+- **`favorites`**: Handles user favorites, persisted to `localStorage`.
+
+### Network Layer (Axios)
+
+A singleton Axios instance (`@/lib/axios`) handles all requests with robust interceptors:
+
+- **Request**: Injects `X-Request-Id` and `X-Request-Time` headers for tracing.
+- **Response**: Normalizes errors (404, 500, 503) into a standard format for consistent UI feedback.
+
+## 📸 Screenshots
+
+### Product List (SSR + CSR)
+
+<!-- Place screenshot here -->
+
+_Displays product grid with search, sort, and categories._
+
+### Product Detail
+
+<!-- Place screenshot here -->
+
+_Full product information with reviews and easy navigation._
+
+### Loading State
+
+<!-- Place screenshot here -->
+
+_Skeleton loaders provide visual feedback during data fetching._
+
+### Error State
+
+<!-- Place screenshot here -->
+
+_Graceful error handling with user-friendly messages._
+
+## ✅ Acceptance Criteria Status
+
+- [x] SSR works on initial load
+- [x] CSR interactions work without refresh
+- [x] Axios interceptors implemented
+- [x] Redux slices implemented
+- [x] Responsive MUI UI
+- [x] Bonus: Favorites with localStorage
+- [x] Bonus: Category filter with URL params
