@@ -16,37 +16,64 @@ Please add the following images to the `screenshots` folder in the root director
 
 ![Product List Page](./screenshots/product-list.png)
 
-_Modern product grid with advanced filtering, search, and sorting capabilities_
+_**Key Features:**_
+
+- **Dynamic Filtering:** Filter products by category with URL synchronization for shareability.
+- **Smart Search:** Debounced search input (500ms) to reduce API calls and improve performance.
+- **Stock Validation:** Out-of-stock items are visually distinguished (grayscale) and non-interactive.
+- **Tech:** Uses `useSearchParams` for state persistence and Server Components for initial data fetching.
 
 ### Product Detail Page
 
 ![Product Detail Page](./screenshots/product-detail.png)
 
-_Comprehensive product information with gallery, specifications, and reviews_
+_**Key Features:**_
+
+- **Rich Media Gallery:** Interactive image slider with thumbnail navigation.
+- **Persisted State:** Add-to-cart functionality with Redux Toolkit and LocalStorage persistence.
+- **Responsive Design:** Adaptive layout using MUI Grid v2 (`size` prop) for different screen sizes.
+- **Feedback:** Toast notifications upon adding items to the cart or favorites.
 
 ### Loading State
 
 ![Loading State](./screenshots/loading.png)
 
-_Smooth skeleton loading animations for better user experience_
+_**Key Features:**_
+
+- **Skeleton UI:** Mimics the actual content layout to reduce perceived waiting time.
+- **Prevention:** Prevents Layout Shift (CLS) by reserving space for incoming data.
+- **Hybrid Approach:** Used during both initial SSR hydration and subsequent client-side navigation.
 
 ### Error State
 
 ![Error State](./screenshots/error.png)
 
-_User-friendly error messages with retry functionality_
+_**Key Features:**_
+
+- **Global Handling:** Centralized error boundary (`error.tsx`) catching both runtime and API errors.
+- **Recovery:** "Try Again" button executes `reset()` to attempt re-rendering the segment without a full page reload.
+- **Visuals:** Custom designed error illustrations matching the app's glassmorphism theme.
 
 ### Not Found State
 
 ![Not Found State](./screenshots/not-found.png)
 
-_Custom 404 page for better navigation when content is missing_
+_**Key Features:**_
+
+- **Routing:** Catches all unmatched routes (`[...catchAll]`) and displays a helpful 404 screen.
+- **Navigation:** Provides a direct link back to the dashboard to keep users within the app flow.
+- **Consistency:** Maintains the same layout and header visibility even on non-existent pages.
 
 ### Profile Page
 
 ![Profile Page](./screenshots/profile.png)
 
-_Personalized user dashboard with order history and account details_
+**_Key Features:_**
+
+- **Modular Architecture:** Implemented as a standalone feature module (`src/features/profile`).
+- **Data Visualization:** Displays mock order history and status chips (Delivered/Processing) with conditional styling.
+- **Modern UI:** Utilizes Material UI `Avatar`, `Paper`, and `Grid` components with a custom gradient banner.
+- **Layout:** Responsive 2-column layout separating personal info from transaction logs.
 
 ## 🚀 Features
 
