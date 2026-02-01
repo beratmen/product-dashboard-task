@@ -119,17 +119,19 @@ export default function Navigation() {
                 </Badge>
               </IconButton>
               
-              <IconButton
-                sx={{
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'scale(1.1)',
-                    color: 'primary.main'
-                  }
-                }}
-              >
-                  <Person fontSize="medium" />
-              </IconButton>
+              <Link href="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <IconButton
+                  sx={{
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'scale(1.1)',
+                      color: 'primary.main'
+                    }
+                  }}
+                >
+                    <Person fontSize="medium" />
+                </IconButton>
+              </Link>
             </Stack>
 
           </Toolbar>

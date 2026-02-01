@@ -25,7 +25,13 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { items, total, loading, error } = useAppSelector((state) => state.products);
+  // Using selector with type assertion to simulate modified state for testing
+  const { items: originalItems, total, loading, error } = useAppSelector((state) => state.products);
+  
+  // TEMPORARY: Simulate stock for testing (Every 3rd item is out of stock)
+  const items = originalItems.map((item, index) => 
+    index % 3 === 0 ? { ...item, stock: 0 } : item
+  );
   const { searchQuery, currentPage, itemsPerPage, sortBy, selectedCategory } = useAppSelector((state) => state.ui);
   const { favoriteIds, isHydrated } = useAppSelector((state) => state.favorites);
   const { isHydrated: isCartHydrated } = useAppSelector((state) => state.cart);
@@ -293,9 +299,22 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                 mb: 6,
               }}
             >
-              {sortedItems.map((product) => (
-                <Link key={product.id} href={`/products/${product.id}`} style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
-                  <Paper
+              {sortedItems.map((product) => {
+                const isOutOfStock = product.stock === 0;
+                
+                return (
+                <Link 
+                  key={product.id} 
+                  href={isOutOfStock ? '#' : `/products/${product.id}`} 
+                  style={{ 
+                    textDecoration: 'none', 
+                    width: '100%', 
+                    display: 'block',
+                    pointerEvents: isOutOfStock ? 'none' : 'auto' 
+                  }}
+                  aria-disabled={isOutOfStock}
+                >
+                    <Paper
                     elevation={0}
                     sx={{
                       backgroundColor: '#fff',
@@ -308,9 +327,11 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                       flexDirection: 'column',
                       height: '100%',
                       width: '100%',
-                      cursor: 'pointer',
+                      cursor: isOutOfStock ? 'default' : 'pointer',
                       position: 'relative',
-                      '&:hover': {
+                      opacity: isOutOfStock ? 0.7 : 1,
+                      filter: isOutOfStock ? 'grayscale(1)' : 'none',
+                      '&:hover': !isOutOfStock ? {
                         transform: 'translateY(-12px) scale(1.02)',
                         boxShadow: '0 20px 40px -12px rgba(102, 126, 234, 0.25), 0 0 0 1px rgba(102, 126, 234, 0.1)',
                         borderColor: 'rgba(102, 126, 234, 0.3)',
@@ -321,7 +342,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                           opacity: 1,
                           transform: 'translateY(0)',
                         }
-                      },
+                      } : {},
                     }}
                   >
                     {/* Image */}
@@ -363,7 +384,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                       />
 
                       {/* Discount Badge */}
-                      {product.discountPercentage > 0 && (
+                      {product.discountPercentage > 0 && !isOutOfStock && (
                         <Chip
                           label={`-${Math.round(product.discountPercentage)}%`}
                           size="small"
@@ -378,6 +399,25 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                             height: 28,
                             borderRadius: 2,
                             boxShadow: '0 4px 12px rgba(244, 63, 94, 0.4)',
+                          }}
+                        />
+                      )}
+
+                      {/* Out of Stock Badge */}
+                      {isOutOfStock && (
+                        <Chip
+                          label="OUT OF STOCK"
+                          size="small"
+                          sx={{
+                            position: 'absolute',
+                            top: 12,
+                            right: 12,
+                            background: '#334155',
+                            color: 'white',
+                            fontWeight: 800,
+                            fontSize: '0.75rem',
+                            height: 28,
+                            borderRadius: 2,
                           }}
                         />
                       )}
@@ -509,6 +549,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                         </Box>
                         <IconButton
                           className="add-to-cart-btn"
+                          disabled={isOutOfStock}
                           onClick={(e) => handleAddToCart(e, product)}
                           sx={{
                             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -519,6 +560,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                             transform: 'translateY(4px)',
                             transition: 'all 0.3s ease',
                             boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+                            display: isOutOfStock ? 'none' : 'flex',
                             '&:hover': {
                               background: 'linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)',
                               transform: 'scale(1.1)',
@@ -531,8 +573,10 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                       </Stack>
                     </Box>
                   </Paper>
+
                 </Link>
-              ))}
+                );
+              })}
             </Box>
 
             {/* Pagination */}

@@ -42,6 +42,12 @@ _User-friendly error messages with retry functionality_
 
 _Custom 404 page for better navigation when content is missing_
 
+### Profile Page
+
+![Profile Page](./screenshots/profile.png)
+
+_Personalized user dashboard with order history and account details_
+
 ## 🚀 Features
 
 ### 🛍️ Core E-Commerce
@@ -69,6 +75,7 @@ _Custom 404 page for better navigation when content is missing_
 | **HTTP Client**      | Axios                   |
 | **Styling**          | MUI System + Emotion    |
 | **Persistence**      | LocalStorage API        |
+| **DevOps**           | Docker                  |
 | **Linting**          | ESLint, Prettier        |
 
 ## 📦 Project Architecture
@@ -145,6 +152,25 @@ src/
 4. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
+### 🐳 Running with Docker
+
+This project is fully containerized. You can run it with a single command:
+
+1. **Build and Run**
+
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Access the App**
+   Open [http://localhost:3000](http://localhost:3000)
+
+3. **Stop the Container**
+   Press `Ctrl + C` or run:
+   ```bash
+   docker-compose down
+   ```
+
 ### Available Scripts
 
 ```bash
@@ -179,7 +205,7 @@ A custom Material UI theme is implemented with:
 
 ## 🚀 Future Enhancements
 
-- [ ] User Authentication & Profiles
+- [x] User Authentication & Profiles (Mock Implementation)
 - [ ] Payment Gateway Integration
 - [ ] Order History & Tracking
 - [ ] Dark Mode Support
