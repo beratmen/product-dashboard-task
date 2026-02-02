@@ -62,11 +62,11 @@ export default function Error({
           </Typography>
           
           <Typography variant="h5" fontWeight={700} sx={{ mb: 2, color: '#1e293b' }}>
-            Bir şeyler yanlış gitti
+            Something went wrong
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 4, lineHeight: 1.6 }}>
-            Beklenmedik bir hata ile karşılaştık. Lütfen sayfayı yenilemeyi deneyin veya sorun devam ederse destekle iletişime geçin.
+            We encountered an unexpected error. Please try refreshing the page or contact support if the problem persists.
           </Typography>
 
           {/* 4. GELİŞTİRİCİ NOTU (Development Mode Only)
@@ -86,7 +86,7 @@ export default function Error({
               }}
             >
               <Typography variant="caption" fontFamily="monospace" color="error.main">
-                Hata Mesajı: {error.message}
+                Error Message: {error.message}
               </Typography>
             </Paper>
           )}
@@ -107,7 +107,7 @@ export default function Error({
                 boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)',
               }}
             >
-              Tekrar Dene
+              Try Again
             </Button>
             
             {/* Anasayfa Butonu: Kullanıcıyı kilitlendiği yerden ana sayfaya kurtarır. */}
@@ -124,7 +124,7 @@ export default function Error({
                 borderColor: 'divider',
               }}
             >
-              Anasayfaya Git
+              Go to Home
             </Button>
           </Box>
         </Paper>

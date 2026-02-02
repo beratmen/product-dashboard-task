@@ -4,6 +4,7 @@ import { Close, Delete, Add, Remove, ShoppingCartOutlined } from '@mui/icons-mat
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { removeFromCart, updateQuantity } from '@/features/cart/store/cartSlice';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface CartDrawerProps {
   open: boolean;
@@ -12,6 +13,8 @@ interface CartDrawerProps {
 
 export default function CartDrawer(props : CartDrawerProps) { 
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const { items } = useAppSelector((state) => state.cart);
 
   const total = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
@@ -193,6 +196,7 @@ export default function CartDrawer(props : CartDrawerProps) {
                 variant="contained"
                 size="large"
                 fullWidth
+                onClick={() => router.push('/error')}
                 sx={{
                   fontWeight: 800,
                   py: 1.5,

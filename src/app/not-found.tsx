@@ -55,7 +55,7 @@ export default function NotFound() {
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 4, lineHeight: 1.6 }}>
-            Aradığınız sayfa mevcut değil veya taşınmış olabilir.
+            The page you are looking for does not exist or might have been moved.
           </Typography>
 
           {/* 4. ANA SAYFAYA DÖNÜŞ BUTONU */}
@@ -73,7 +73,7 @@ export default function NotFound() {
               boxShadow: '0 8px 16px rgba(102, 126, 234, 0.24)',
             }}
           >
-            Anasayfaya Dön
+            Back to Home
           </Button>
         </Paper>
       </Container>

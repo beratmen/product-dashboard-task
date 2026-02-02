@@ -13,7 +13,7 @@ export const getFavorites = (): Product[] => {
     const stored = localStorage.getItem(FAVORITES_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch (error) {
-    console.error('LocalStorage okuma hatası:', error);
+    console.error('LocalStorage read error:', error);
     return [];
   }
 };
@@ -27,7 +27,7 @@ export const saveFavorites = (products: Product[]): void => {
   try {
     localStorage.setItem(FAVORITES_KEY, JSON.stringify(products));
   } catch (error) {
-    console.error('LocalStorage kaydetme hatası:', error);
+    console.error('LocalStorage save error:', error);
   }
 };
 
@@ -41,6 +41,6 @@ export const clearFavorites = (): void => {
   try {
     localStorage.removeItem(FAVORITES_KEY);
   } catch (error) {
-    console.error('LocalStorage silme hatası:', error);
+    console.error('LocalStorage clear error:', error);
   }
 };

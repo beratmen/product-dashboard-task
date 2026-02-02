@@ -26,7 +26,7 @@ export const getCart = (): CartItem[] => {
     // Veri yoksa; boş bir sepet [] dön.
     return stored ? JSON.parse(stored) : [];
   } catch (error) {
-    console.error('LocalStorage sepet okuma hatasi:', error);
+    console.error('LocalStorage cart read error:', error);
     return [];
   }
 };
@@ -42,7 +42,7 @@ export const saveCart = (items: CartItem[]): void => {
     // Listeyi tarayıcının saklayabileceği düz metin (string) formatına çevirip kaydeder.
     localStorage.setItem(CART_KEY, JSON.stringify(items));
   } catch (error) {
-    console.error('LocalStorage sepet kaydetme hatasi:', error);
+    console.error('LocalStorage cart save error:', error);
   }
 };
 
@@ -56,6 +56,6 @@ export const clearCart = (): void => {
   try {
     localStorage.removeItem(CART_KEY);
   } catch (error) {
-    console.error('LocalStorage sepet silme hatası:', error);
+    console.error('LocalStorage cart clear error:', error);
   }
 };

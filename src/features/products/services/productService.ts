@@ -7,21 +7,21 @@ import { Product, ProductResponse } from '@/features/products/types';
  * anlamlı mesajlar fırlatır.
  */
 const handleApiError = (error: any, context: string) => {
-  const errorMessage = error.response?.data?.message || error.message || 'Bir hata oluştu';
+  const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
   const status = error.response?.status || 500;
   
   // Hata detayını geliştirici için konsola yazdırır.
-  console.error(`[${context}] Hatası:`, { status, message: errorMessage });
+  console.error(`[${context}] Error:`, { status, message: errorMessage });
   
   // HTTP durum kodlarına göre özel hata mesajları fırlatır.
   if (status === 404) {
-    throw new Error(`${context}: Kaynak bulunamadı`);
+    throw new Error(`${context}: Resource not found`);
   }
   if (status === 500) {
-    throw new Error(`${context}: Sunucu hatası. Lütfen daha sonra tekrar deneyin.`);
+    throw new Error(`${context}: Server error. Please try again later.`);
   }
   if (status === 503) {
-    throw new Error(`${context}: Servis şu an kapalı. Lütfen daha sonra tekrar deneyin.`);
+    throw new Error(`${context}: Service currently unavailable. Please try again later.`);
   }
   
   throw new Error(errorMessage);
@@ -56,7 +56,7 @@ export const fetchProducts = async (
     
     // Gelen verinin doğruluğunu kontrol et
     if (!response.data || !response.data.products) {
-      throw new Error('Geçersiz veri formatı alındı');
+      throw new Error('Invalid data format received');
     }
     
     return response.data;
@@ -74,13 +74,13 @@ export const fetchProductById = async (id: string): Promise<Product> => {
   try {
     // ID boş gelirse hata fırlat
     if (!id || id.trim() === '') {
-      throw new Error('Ürün ID bilgisi gerekli');
+      throw new Error('Product ID is required');
     }
     
     const response = await axiosInstance.get<Product>(`/products/${encodeURIComponent(id)}`);
     
     if (!response.data || !response.data.id) {
-      throw new Error('Geçersiz ürün verisi');
+      throw new Error('Invalid product data');
     }
     
     return response.data;

@@ -2,6 +2,8 @@
 
 import { Box, Container, Paper, Typography, Avatar, Grid, Stack, Chip, Divider, List, ListItem, ListItemText, ListItemAvatar } from '@mui/material';
 import { Person, Email, Phone, LocationOn, ShoppingBag, LocalShipping, CheckCircle } from '@mui/icons-material';
+import { useRouter } from 'next/navigation';
+
 
 // Mock Data
 const USER = {
@@ -38,6 +40,8 @@ const ORDERS = [
 ];
 
 export default function ProfileView() {
+  const router = useRouter();
+
   return (
     <Box sx={{ minHeight: '100vh', pb: 8, background: 'linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%)' }}>
       <Container maxWidth="lg" sx={{ pt: 6 }}>
@@ -160,11 +164,15 @@ export default function ProfileView() {
                   <Paper
                     key={order.id}
                     elevation={0}
+                    onClick={() => {
+                      router.push('/not-found');
+                    }}
                     sx={{
                       p: 2.5,
                       borderRadius: 2,
                       border: '1px solid',
                       borderColor: 'rgba(0,0,0,0.06)',
+                      cursor: 'pointer',
                       transition: 'all 0.2s ease',
                       '&:hover': {
                         borderColor: '#4338ca',
