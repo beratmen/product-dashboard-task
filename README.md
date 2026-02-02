@@ -4,9 +4,9 @@ A modern, full-featured e-commerce product dashboard built with **Next.js 16**, 
 
 ## 🎥 Quick Look
 
-<video src="https://github.com/user-attachments/assets/63f34d0c-8e3f-42bb-b6fd-9b8c8bc8a6e6" controls width="100%"></video>
+<video src="https://github.com/user-attachments/assets/6e17a4f7-4abf-4fe9-8a5f-db860d3c305c" controls width="100%"></video>
 
-_(If the video doesn't play, you can [view it here](https://github.com/user-attachments/assets/63f34d0c-8e3f-42bb-b6fd-9b8c8bc8a6e6))_
+_(If the video doesn't play, you can [view it here](https://github.com/user-attachments/assets/6e17a4f7-4abf-4fe9-8a5f-db860d3c305c))_
 
 ## 📸 Screenshots
 
@@ -232,6 +232,32 @@ This project is created as a technical assessment and is available for review pu
 - [DummyJSON API](https://dummyjson.com/) for providing the product data
 - Material UI team for the excellent component library
 - Next.js team for the powerful framework
+
+## 📚 What I Learned
+
+This project has been an incredible learning journey that significantly improved my frontend development skills. Here are the key technologies and concepts I mastered:
+
+### 🎯 Core Technologies
+
+- **Next.js 16 App Router**: Learned the modern file-based routing system, server/client component patterns, and how to leverage SSR/CSR effectively for optimal performance.
+- **Redux Toolkit**: Gained deep understanding of state management, creating slices, async thunks, and managing complex application state in a scalable way.
+- **TypeScript**: Improved type safety skills, creating interfaces, type definitions, and ensuring robust code quality throughout the application.
+
+### 🔧 Advanced Concepts
+
+- **API Integration with Axios**: Learned to create custom Axios instances with base configurations (baseURL, timeout, headers) and manage API calls efficiently across the application.
+- **LocalStorage Persistence**: Learned how to synchronize Redux state with browser storage for persistent user data across sessions.
+- **Feature-Based Architecture**: Understood how to structure large applications using modular, feature-based organization for better maintainability.
+- **Material UI v7**: Developed expertise in using MUI components, customizing themes, and creating responsive, accessible user interfaces.
+
+### 💡 Best Practices
+
+- **Error Handling**: Implemented global error boundaries and user-friendly error states.
+- **Performance Optimization**: Applied debouncing, lazy loading, and efficient rendering strategies.
+- **Code Organization**: Learned to separate concerns with services, utilities, and component-based architecture.
+- **User Experience**: Created loading states, skeleton screens, and smooth transitions for better UX.
+
+This project has been instrumental in my growth as a developer, helping me understand real-world application development patterns and modern React ecosystem best practices.
 
 ---
 
