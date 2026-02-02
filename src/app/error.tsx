@@ -1,4 +1,4 @@
-'use client';
+'use client'; // Hata yakalama bileşenleri mutlaka Client Component olmalıdır.
 
 import { useEffect } from 'react';
 import { Box, Container, Typography, Button, Paper } from '@mui/material';
@@ -9,17 +9,19 @@ export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+  error: Error & { digest?: string }; // Oluşan hatanın detaylarını içeren nesne
+  reset: () => void;                 // Sayfayı/Bölümü yeniden denemek için kullanılan fonksiyon
 }) {
   const router = useRouter();
-
+  
+  // 1. HATA GÜNLÜĞÜ (Logging)
+  // Hata oluştuğunda bu bilgiyi konsola veya bir hata takip servisine (Sentry vb.) gönderir.
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error(error);
+    console.error('Uygulama Hatası:', error);
   }, [error]);
 
   return (
+    // 2. ANA KAPSAYICI
     <Box
       sx={{
         minHeight: '100vh',
@@ -43,6 +45,8 @@ export default function Error({
             boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
           }}
         >
+          {/* 3. KRİTİK HATA BAŞLIĞI 
+              Kırmızı gradyan kullanılarak durumun ciddiyeti vurgulanmış. */}
           <Typography
             variant="h1"
             sx={{
@@ -58,13 +62,16 @@ export default function Error({
           </Typography>
           
           <Typography variant="h5" fontWeight={700} sx={{ mb: 2, color: '#1e293b' }}>
-            Something went wrong
+            Bir şeyler yanlış gitti
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 4, lineHeight: 1.6 }}>
-            We encountered an unexpected error. Please try refreshing the page or contact support if the problem persists.
+            Beklenmedik bir hata ile karşılaştık. Lütfen sayfayı yenilemeyi deneyin veya sorun devam ederse destekle iletişime geçin.
           </Typography>
 
+          {/* 4. GELİŞTİRİCİ NOTU (Development Mode Only)
+              Sadece yazılım geliştirme aşamasındaysanız hatanın teknik detayını gösterir. 
+              Canlı sisteme (production) geçtiğinizde bu kutu gizlenir. */}
           {process.env.NODE_ENV === 'development' && (
             <Paper
               variant="outlined"
@@ -79,12 +86,14 @@ export default function Error({
               }}
             >
               <Typography variant="caption" fontFamily="monospace" color="error.main">
-                {error.message}
+                Hata Mesajı: {error.message}
               </Typography>
             </Paper>
           )}
 
+          {/* 5. AKSİYON BUTONLARI */}
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+            {/* Tekrar Dene Butonu: Hatayı temizleyip sayfayı yeniden render etmeye çalışır. */}
             <Button
               variant="contained"
               size="large"
@@ -98,9 +107,10 @@ export default function Error({
                 boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)',
               }}
             >
-              Try Again
+              Tekrar Dene
             </Button>
             
+            {/* Anasayfa Butonu: Kullanıcıyı kilitlendiği yerden ana sayfaya kurtarır. */}
             <Button
               variant="outlined"
               size="large"
@@ -112,14 +122,9 @@ export default function Error({
                 fontWeight: 600,
                 color: 'text.secondary',
                 borderColor: 'divider',
-                '&:hover': {
-                  borderColor: 'text.primary',
-                  color: 'text.primary',
-                  bgcolor: 'transparent',
-                },
               }}
             >
-              Go Home
+              Anasayfaya Git
             </Button>
           </Box>
         </Paper>

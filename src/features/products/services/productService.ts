@@ -1,47 +1,62 @@
 import axiosInstance from '@/lib/axios';
 import { Product, ProductResponse } from '@/features/products/types';
 
+/**
+ * 1. MERKEZİ HATA YÖNETİMİ (handleApiError)
+ * API'den gelen hataları analiz eder ve kullanıcıya/konsola 
+ * anlamlı mesajlar fırlatır.
+ */
 const handleApiError = (error: any, context: string) => {
-  const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
+  const errorMessage = error.response?.data?.message || error.message || 'Bir hata oluştu';
   const status = error.response?.status || 500;
   
-  console.error(`[${context}] Error:`, { status, message: errorMessage });
+  // Hata detayını geliştirici için konsola yazdırır.
+  console.error(`[${context}] Hatası:`, { status, message: errorMessage });
   
+  // HTTP durum kodlarına göre özel hata mesajları fırlatır.
   if (status === 404) {
-    throw new Error(`${context}: Resource not found`);
+    throw new Error(`${context}: Kaynak bulunamadı`);
   }
   if (status === 500) {
-    throw new Error(`${context}: Server error. Please try again later.`);
+    throw new Error(`${context}: Sunucu hatası. Lütfen daha sonra tekrar deneyin.`);
   }
   if (status === 503) {
-    throw new Error(`${context}: Service unavailable. Please try again later.`);
+    throw new Error(`${context}: Servis şu an kapalı. Lütfen daha sonra tekrar deneyin.`);
   }
   
   throw new Error(errorMessage);
 };
 
+/**
+ * 2. ÜRÜNLERİ LİSTELEME (fetchProducts)
+ * Bu fonksiyon; arama, kategori filtreleme ve sayfalama yaparak ürünleri çeker.
+ */
 export const fetchProducts = async (
-  limit: number = 20, 
-  skip: number = 0, 
-  q: string = '', 
-  category: string | null = null
+  limit: number = 20,           // Bir kerede kaç ürün gelsin?
+  skip: number = 0,            // Kaç ürün atlansın? (Sayfalama için)
+  q: string = '',              // Arama kelimesi
+  category: string | null = null // Seçili kategori
 ): Promise<ProductResponse> => {
   try {
     let endpoint: string;
     
+    // Uygulanan filtreye göre farklı URL uçları (endpoints) belirlenir:
     if (category) {
+      // Eğer bir kategori seçilmişse o kategoriye ait ürünler istenir.
       endpoint = `/products/category/${encodeURIComponent(category)}?limit=${limit}&skip=${skip}`;
     } else if (q) {
+      // Eğer bir arama kelimesi girilmişse arama sonuçları istenir.
       endpoint = `/products/search?q=${encodeURIComponent(q)}&limit=${limit}&skip=${skip}`;
     } else {
+      // Hiçbir filtre yoksa tüm ürünler liste halinde istenir.
       endpoint = `/products?limit=${limit}&skip=${skip}`;
     }
     
     const response = await axiosInstance.get<ProductResponse>(endpoint);
     
-    // Validate response data
+    // Gelen verinin doğruluğunu kontrol et
     if (!response.data || !response.data.products) {
-      throw new Error('Invalid response data format');
+      throw new Error('Geçersiz veri formatı alındı');
     }
     
     return response.data;
@@ -51,16 +66,21 @@ export const fetchProducts = async (
   }
 };
 
+/**
+ * 3. TEK BİR ÜRÜN ÇEKME (fetchProductById)
+ * ID numarasını kullanarak tek bir ürünün detaylarını getirir.
+ */
 export const fetchProductById = async (id: string): Promise<Product> => {
   try {
+    // ID boş gelirse hata fırlat
     if (!id || id.trim() === '') {
-      throw new Error('Product ID is required');
+      throw new Error('Ürün ID bilgisi gerekli');
     }
     
     const response = await axiosInstance.get<Product>(`/products/${encodeURIComponent(id)}`);
     
     if (!response.data || !response.data.id) {
-      throw new Error('Invalid product data');
+      throw new Error('Geçersiz ürün verisi');
     }
     
     return response.data;
@@ -70,17 +90,19 @@ export const fetchProductById = async (id: string): Promise<Product> => {
   }
 };
 
+/**
+ * 4. KATEGORİLERİ ÇEKME (fetchCategories)
+ * Mağazadaki tüm ürün kategorilerinin listesini getirir.
+ */
 export const fetchCategories = async (): Promise<string[]> => {
   try {
     const response = await axiosInstance.get<any>('/products/categories');
     
-    // API returns array of objects with slug, name, url
-    // We need to extract just the slug values
+    // DummyJSON API'si bazen obje dizisi döner. 
+    // Biz sadece kategori isimlerini (slug) dize (string) olarak ayıklıyoruz.
     if (Array.isArray(response.data)) {
       return response.data.map((cat: any) => {
-        // If it's already a string, return it
         if (typeof cat === 'string') return cat;
-        // If it's an object, extract the slug
         return cat.slug || cat.name || String(cat);
       });
     }
@@ -88,8 +110,7 @@ export const fetchCategories = async (): Promise<string[]> => {
     return [];
   } catch (error) {
     handleApiError(error, 'fetchCategories');
-    // Return empty array on error to prevent app crash
+    // Hata durumunda uygulamanın çökmemesi için boş dizi döner.
     return [];
   }
 };
-

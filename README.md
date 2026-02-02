@@ -10,8 +10,6 @@ _(If the video doesn't play, you can [view it here](https://github.com/user-atta
 
 ## 📸 Screenshots
 
-Please add the following images to the `screenshots` folder in the root directory.
-
 ### Product List Page
 
 ![Product List Page](./screenshots/product-list.png)
@@ -102,8 +100,8 @@ _**Key Features:**_
 | **HTTP Client**      | Axios                   |
 | **Styling**          | MUI System + Emotion    |
 | **Persistence**      | LocalStorage API        |
-| **DevOps**           | Docker                  |
-| **Linting**          | ESLint, Prettier        |
+
+| **Linting** | ESLint, Prettier |
 
 ## 📦 Project Architecture
 
@@ -178,25 +176,6 @@ src/
 
 4. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
-
-### 🐳 Running with Docker
-
-This project is fully containerized. You can run it with a single command:
-
-1. **Build and Run**
-
-   ```bash
-   docker-compose up --build
-   ```
-
-2. **Access the App**
-   Open [http://localhost:3000](http://localhost:3000)
-
-3. **Stop the Container**
-   Press `Ctrl + C` or run:
-   ```bash
-   docker-compose down
-   ```
 
 ### Available Scripts
 

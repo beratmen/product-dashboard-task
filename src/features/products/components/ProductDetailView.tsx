@@ -3,36 +3,28 @@
 import { useState, useEffect } from 'react';
 import {
   Container, Grid, Typography, Box, Rating, Chip, Button,
-  Paper, IconButton, CircularProgress, Alert, Stack, Avatar,
+  Paper, IconButton, Alert, Stack, Avatar,
   Table, TableBody, TableCell, TableRow
 } from '@mui/material';
-import { Product, Review } from '@/features/products/types';
+import { Product, ProductDetailViewProps} from '@/features/products/types';
 import { fetchProductById } from '@/features/products/services/productService';
-import { 
-  Refresh, ArrowBack, ShoppingCart, Favorite, FavoriteBorder,
-  LocalShipping, Verified, Star
-} from '@mui/icons-material';
+import { ArrowBack, ShoppingCart, Favorite, FavoriteBorder} from '@mui/icons-material';
 import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { toggleFavorite } from '@/features/favorites/store/favoritesSlice';
 import { addToCart } from '@/features/cart/store/cartSlice';
 
-interface ProductDetailViewProps {
-  product: Product;
-}
-
-
 
 export default function ProductDetailView({ product: initialProduct }: ProductDetailViewProps) {
   const dispatch = useAppDispatch();
-  const { favoriteIds } = useAppSelector((state) => state.favorites);
+  const { items: favoriteItems } = useAppSelector((state) => state.favorites);
   const [product, setProduct] = useState<Product>(initialProduct);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState(product.images?.[0] || product.thumbnail);
 
   
-  const isFavorite = favoriteIds.includes(product.id);
+  const isFavorite = favoriteItems.some(fav => fav.id === product.id);
 
   // Update selected image if product changes
   useEffect(() => {
@@ -40,21 +32,8 @@ export default function ProductDetailView({ product: initialProduct }: ProductDe
     setSelectedImage(initialProduct.images?.[0] || initialProduct.thumbnail);
   }, [initialProduct]);
 
-  const handleRefresh = async () => {
-    setLoading(true);
-    try {
-      const refreshedProduct = await fetchProductById(String(product.id));
-      setProduct(refreshedProduct);
-      setSelectedImage(refreshedProduct.images?.[0] || refreshedProduct.thumbnail);
-    } catch (err) {
-      setError('Failed to refresh data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleAddToFavorite = () => {
-    dispatch(toggleFavorite(product.id));
+    dispatch(toggleFavorite(product));
   };
 
   const handleAddToCart = () => {

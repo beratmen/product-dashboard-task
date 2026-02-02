@@ -1,12 +1,8 @@
 'use client';
-
-import { useState, useEffect } from 'react';
-import {
-  Drawer, Box, Typography, IconButton, Stack, Divider, Button
-} from '@mui/material';
+import { Drawer, Box, Typography, IconButton, Stack, Divider, Button} from '@mui/material';
 import { Close, FavoriteBorder, Delete, ShoppingCart } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { toggleFavorite } from '@/features/favorites/store/favoritesSlice';
+import { removeFavoriteById } from '@/features/favorites/store/favoritesSlice';
 import { addToCart } from '@/features/cart/store/cartSlice';
 import Link from 'next/link';
 import { Product } from '@/features/products/types';
@@ -18,18 +14,10 @@ interface FavoritesDrawerProps {
 
 export default function FavoritesDrawer({ open, onClose }: FavoritesDrawerProps) {
   const dispatch = useAppDispatch();
-  const { favoriteIds } = useAppSelector((state) => state.favorites);
-  const { items: allProducts } = useAppSelector((state) => state.products);
-  const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    // Filter products that are in favorites
-    const favorites = allProducts.filter(product => favoriteIds.includes(product.id));
-    setFavoriteProducts(favorites);
-  }, [favoriteIds, allProducts]);
+  const { items: favoriteProducts } = useAppSelector((state) => state.favorites);
 
   const handleRemoveFavorite = (productId: number) => {
-    dispatch(toggleFavorite(productId));
+    dispatch(removeFavoriteById(productId));
   };
 
   const handleAddToCart = (product: Product) => {

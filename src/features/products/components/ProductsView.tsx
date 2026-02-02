@@ -3,23 +3,19 @@
 import React, { useEffect, useCallback } from 'react';
 import {
   Container, TextField, MenuItem, Box, CircularProgress, Stack,
-  InputAdornment, Typography, Button, Chip, Rating, IconButton, Pagination, Paper
+  InputAdornment, Typography, Chip, Rating, IconButton, Pagination, Paper
 } from '@mui/material';
 import { Search as SearchIcon, ShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchProductsAsync, setProducts } from '@/features/products/store/productSlice';
 import { setSearchQuery, setPage, setSortBy, setCategory } from '@/store/slices/uiSlice';
-import { toggleFavorite, loadFavorites } from '@/features/favorites/store/favoritesSlice';
-import { addToCart, loadCart } from '@/features/cart/store/cartSlice';
-import { ProductResponse } from '@/features/products/types';
+import { addToCart } from '@/features/cart/store/cartSlice';
+import { toggleFavorite } from '@/features/favorites/store/favoritesSlice';
 import { debounce } from '@/utils/debounce';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { fetchCategories } from '@/features/products/services/productService';
-
-interface ProductsViewProps {
-  initialData: ProductResponse;
-}
+import { ProductsViewProps, Product } from '@/features/products/types';
 
 export default function ProductsView({ initialData }: ProductsViewProps) {
   const dispatch = useAppDispatch();
@@ -33,8 +29,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
     index % 3 === 0 ? { ...item, stock: 0 } : item
   );
   const { searchQuery, currentPage, itemsPerPage, sortBy, selectedCategory } = useAppSelector((state) => state.ui);
-  const { favoriteIds, isHydrated } = useAppSelector((state) => state.favorites);
-  const { isHydrated: isCartHydrated } = useAppSelector((state) => state.cart);
+  const { items: favoriteItems } = useAppSelector((state) => state.favorites);
   const [categories, setCategories] = React.useState<string[]>([]);
 
   useEffect(() => {
@@ -48,20 +43,9 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
     }
   }, [searchParams, dispatch, selectedCategory]);
 
-  useEffect(() => {
-    if (!isHydrated) {
-      dispatch(loadFavorites());
-    }
-  }, [dispatch, isHydrated]);
 
   useEffect(() => {
-    if (!isCartHydrated) {
-      dispatch(loadCart());
-    }
-  }, [dispatch, isCartHydrated]);
-
-  useEffect(() => {
-    if (initialData && items.length === 0) {
+    if (initialData && items.length === 0) { // Buraya tekrar bak!!!
       dispatch(setProducts(initialData));
     }
   }, [dispatch, initialData, items.length]);
@@ -70,7 +54,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
     debounce((q: string) => {
       dispatch(setSearchQuery(q));
     }, 500),
-    [dispatch]
+    [dispatch] // Buraya tekrar bak!!!
   );
 
   useEffect(() => {
@@ -96,10 +80,10 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
     dispatch(setSortBy(e.target.value as 'price' | 'rating' | 'none'));
   };
 
-  const handleFavoriteClick = (e: React.MouseEvent, productId: number) => {
+  const handleFavoriteClick = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch(toggleFavorite(productId));
+    dispatch(toggleFavorite(product));
   };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -426,7 +410,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                       <IconButton
                         onClick={(e) => {
                           e.preventDefault();
-                          handleFavoriteClick(e, product.id);
+                          handleFavoriteClick(e, product);
                         }}
                         sx={{
                           position: 'absolute',
@@ -444,7 +428,7 @@ export default function ProductsView({ initialData }: ProductsViewProps) {
                         }}
                         size="small"
                       >
-                        {favoriteIds.includes(product.id) ? (
+                        {favoriteItems.some(fav => fav.id === product.id) ? (
                           <Favorite sx={{ color: '#f43f5e', fontSize: 20 }} />
                         ) : (
                           <FavoriteBorder sx={{ fontSize: 20 }} />

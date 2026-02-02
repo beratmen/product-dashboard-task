@@ -1,55 +1,64 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getFavorites, saveFavorites } from '@/features/favorites/utils/storage';
+import { Product } from '@/features/products/types';
 
+// 1. FAVORİ HAFIZA YAPISI (Interface)
 interface FavoritesState {
-  favoriteIds: number[];
-  isHydrated: boolean;
+  items: Product[];  // Beğenilen ürünlerin tamamını tutan liste
+  isHydrated: boolean;  // LocalStorage'dan veriler yüklendi mi?
 }
 
 const initialState: FavoritesState = {
-  favoriteIds: [],
-  isHydrated: false,
+  items: [],      // Başlangıçta liste boş
+  isHydrated: false,    // Henüz yükleme yapılmadı
 };
 
+// 2. FAVORİ SLICE TANIMI
 const favoritesSlice = createSlice({
   name: 'favorites',
   initialState,
   reducers: {
+    
+    // Tarayıcı hafızasından (LocalStorage) favorileri çekip Redux'a yükler
     loadFavorites(state) {
-      state.favoriteIds = getFavorites();
+      state.items = getFavorites();
       state.isHydrated = true;
     },
-    addFavorite(state, action: PayloadAction<number>) {
-      if (!state.favoriteIds.includes(action.payload)) {
-        state.favoriteIds.push(action.payload);
-        saveFavorites(state.favoriteIds);
-      }
-    },
-    removeFavorite(state, action: PayloadAction<number>) {
-      state.favoriteIds = state.favoriteIds.filter(id => id !== action.payload);
-      saveFavorites(state.favoriteIds);
-    },
-    toggleFavorite(state, action: PayloadAction<number>) {
-      const index = state.favoriteIds.indexOf(action.payload);
+
+    // TERSİNE ÇEVİR (Toggle): Ürün varsa çıkarır, yoksa ekler.
+    toggleFavorite(state, action: PayloadAction<Product>) {
+      const product = action.payload;
+      const index = state.items.findIndex(item => item.id === product.id);
+      
       if (index >= 0) {
-        state.favoriteIds.splice(index, 1);
+        // Ürün zaten varsa; onu listeden sil
+        state.items.splice(index, 1);
       } else {
-        state.favoriteIds.push(action.payload);
+        // Ürün yoksa; listeye ekle
+        state.items.push(product);
       }
-      saveFavorites(state.favoriteIds);
+      saveFavorites(state.items); // Kaydet
     },
+
+    // Bir ürünü ID üzerinden kaldırır (Drawer gibi yerlerde kolaylık için)
+    removeFavoriteById(state, action: PayloadAction<number>) {
+      state.items = state.items.filter(item => item.id !== action.payload);
+      saveFavorites(state.items);
+    },
+
+    // Tüm favori listesini bir kerede sıfırlar
     clearAllFavorites(state) {
-      state.favoriteIds = [];
-      saveFavorites([]);
+      state.items = [];
+      saveFavorites([]); // LocalStorage'ı da temizle
     },
   },
 });
 
+// 3. DIŞA AKTARMA (Exports)
 export const { 
   loadFavorites, 
-  addFavorite, 
-  removeFavorite, 
   toggleFavorite,
+  removeFavoriteById,
   clearAllFavorites 
 } = favoritesSlice.actions;
 
