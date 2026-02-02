@@ -1,9 +1,5 @@
 'use client';
-
-import { useState } from 'react';
-import {
-  Drawer, Box, Typography, IconButton, Stack, Divider, Button, Avatar
-} from '@mui/material';
+import { Drawer, Box, Typography, IconButton, Stack, Divider, Button} from '@mui/material';
 import { Close, Delete, Add, Remove, ShoppingCartOutlined } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { removeFromCart, updateQuantity } from '@/features/cart/store/cartSlice';
@@ -14,7 +10,7 @@ interface CartDrawerProps {
   onClose: () => void;
 }
 
-export default function CartDrawer({ open, onClose }: CartDrawerProps) {
+export default function CartDrawer(props : CartDrawerProps) { 
   const dispatch = useAppDispatch();
   const { items } = useAppSelector((state) => state.cart);
 
@@ -31,8 +27,8 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
   return (
     <Drawer
       anchor="right"
-      open={open}
-      onClose={onClose}
+      open={props.open}
+      onClose={props.onClose}
       sx={{
         '& .MuiDrawer-paper': {
           width: { xs: '100%', sm: 420 },
@@ -51,7 +47,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
           }}>
             Shopping Cart
           </Typography>
-          <IconButton onClick={onClose} size="small">
+          <IconButton onClick={props.onClose} size="small">
             <Close />
           </IconButton>
         </Stack>
